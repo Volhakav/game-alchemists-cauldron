@@ -4,10 +4,10 @@
   "description": "**Alchemist's Cauldron** is a browser-based mini-game developed as part of **The Rolling Scopes School** qualifying stage.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1" ,
+    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-  "build": "tsc && vite build",
-  "preview": "vite preview"
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,13 @@
   },
   "homepage": "https://github.com/Volhakav/game-alchemists-cauldron#readme",
   "devDependencies": {
-    "typescript": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "prettier": "^3.9.10",
+    "typescript": "^5.5.4",
     "vite": "^8.3.4"
   }
 }
