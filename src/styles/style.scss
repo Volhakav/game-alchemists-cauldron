@@ -1,0 +1,206 @@
+$bg-color: #121214;
+$panel-bg: #1e1e24;
+$accent-color: #d4af37; // Золотистый алхимический цвет
+$text-color: #e0e0e0;
+$border-color: #33333d;
+$card-bg: #2a2a35;
+$disabled-bg: #18181c;
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $bg-color;
+  color: $text-color;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.game-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .game-header {
+    margin-bottom: 20px;
+    text-align: center;
+
+    h1 {
+      color: $accent-color;
+      font-size: 2.2rem;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+  }
+
+  .game-main {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+// Стили полки ингредиентов
+.shelf-panel {
+  background-color: $panel-bg;
+  border: 2px solid $border-color;
+  border-radius: 8px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+
+  h3 {
+    margin-top: 0;
+    color: $accent-color;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 10px;
+  }
+
+  .shelf-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+// Карточка ингредиента (кнопка)
+.ingredient-card {
+  display: flex;
+  align-items: center;
+  background-color: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  padding: 10px 15px;
+  color: $text-color;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  text-align: left;
+  width: 100%;
+
+  &:hover:not(:disabled) {
+    border-color: $accent-color;
+    background-color: #353545;
+    transform: translateY(-2px);
+  }
+
+  .icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    min-width: 35px;
+    text-align: center;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .name {
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+
+    .stats {
+      font-size: 0.75rem;
+      color: #aaa;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .badge {
+    background-color: $accent-color;
+    color: #000;
+    font-weight: bold;
+    font-size: 0.85rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+
+  // Состояние, когда запас равен 0 (пустой слот)
+  &.empty, &.disabled:disabled {
+    background-color: $disabled-bg;
+    border-color: #222;
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+
+    .badge {
+      background-color: #444;
+      color: #888;
+    }
+  }
+}
+
+// Стили котла
+.cauldron-panel {
+  background-color: $panel-bg;
+  border: 2px solid $border-color;
+  border-radius: 8px;
+  padding: 20px;
+  width: 350px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    margin-top: 0;
+    color: $accent-color;
+    font-size: 1.4rem;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 10px;
+  }
+
+  .cauldron-counter {
+    font-size: 0.9rem;
+    color: #bbb;
+    margin-bottom: 15px;
+  }
+
+  .cauldron-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+    border: 2px dashed $border-color;
+    border-radius: 6px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+
+    .empty-text {
+      color: #666;
+      text-align: center;
+      margin-top: 70px;
+      font-style: italic;
+    }
+
+    .cauldron-item {
+      display: flex;
+      align-items: center;
+      background-color: #252530;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border-left: 4px solid $accent-color;
+
+      .icon {
+        font-size: 1.5rem;
+        margin-right: 12px;
+      }
+
+      .name {
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+    }
+  }
+}

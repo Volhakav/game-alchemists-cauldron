@@ -1,16 +1,18 @@
 {
+  "type": "module",
   "name": "game-alchemists-cauldron",
   "version": "1.0.0",
   "description": "**Alchemist's Cauldron** is a browser-based mini-game developed as part of **The Rolling Scopes School** qualifying stage.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests yet\"",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.{ts,html,css}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,html,css}\""
+    "format:check": "prettier --check \"src/**/*.{ts,html,css}\"",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -30,7 +32,9 @@
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.7",
+    "husky": "^9.1.7",
     "prettier": "^3.9.10",
+    "sass": "^1.105.2",
     "typescript": "^5.5.4",
     "vite": "^8.3.4"
   }
