@@ -5,6 +5,9 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "bundler",
+    
+    "types": ["vite/client"],
+
     "strict": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
