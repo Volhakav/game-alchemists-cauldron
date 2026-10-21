@@ -1,0 +1,95 @@
+@import 'variables';
+
+.recipe-panel {
+  background-color: $panel-bg;
+  border: 2px solid $border-color;
+  border-radius: 8px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  h3 {
+    margin-top: 0;
+    color: $accent-color;
+    font-size: 1.1rem;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .recipe-title {
+    color: #fff;
+    font-size: 1.3rem;
+    margin: 0;
+    text-align: center;
+  }
+
+  .recipe-ranges {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 6px;
+
+    .range-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #ccc;
+
+      strong {
+        color: $accent-color;
+      }
+    }
+  }
+
+  .recipe-counter {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #bbb;
+    padding: 6px;
+    border-radius: 4px;
+    background-color: #252530;
+    transition: all 0.3s ease;
+
+    &.max-reached {
+      background-color: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+    }
+  }
+
+  .brew-btn {
+    background: linear-gradient(135deg, $accent-color, #aa820a);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      background: #333;
+      color: #777;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+}
