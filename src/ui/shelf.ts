@@ -2,34 +2,26 @@ import { INGREDIENTS } from '../data/ingredients';
 import { INGREDIENT_IMAGES } from '../data/icons';
 import { gameStore } from '../state/game-state';
 
-export function renderShelf(container: HTMLElement): void {
-  const state = gameStore.getState();
-  const activeIngredients = INGREDIENTS;
-  const isCauldronFull = state.cauldronIngredients.length >= 4;
+const MAX_CAULDRON = 4;
 
-  let cardsHtml = '';
+/** Buduje strukturę panelu tylko raz. */
+function buildShelf(container: HTMLElement): void {
+  const cardsHtml = INGREDIENTS.map((ing) => {
+    const imgUrl = INGREDIENT_IMAGES[ing.id] || '';
 
-  activeIngredients.forEach((ing) => {
-    const stock = state.shelfStock[ing.id] ?? 0;
-    const isEmpty = stock <= 0;
-    const isDisabled = isEmpty || isCauldronFull;
-    const imgUrl = isEmpty ? '' : (INGREDIENT_IMAGES[ing.id] || '');
-
-    cardsHtml += `
-      <button class="ingredient-card ${isEmpty ? 'empty' : ''} ${isDisabled ? 'disabled' : ''}" 
-              data-id="${ing.id}" 
-              ${isDisabled ? 'disabled' : ''}>
+    return `
+      <button class="ingredient-card" data-id="${ing.id}">
         <span class="icon">
-          ${isEmpty ? '' : `<img src="${imgUrl}" alt="${ing.name}" width="36" height="36" />`}
+          ${imgUrl ? `<img src="${imgUrl}" alt="${ing.name}" width="36" height="36" />` : ''}
         </span>
         <div class="info">
           <span class="name">${ing.name}</span>
           <span class="stats">T${ing.temperature} D${ing.density} M${ing.magicPower}</span>
         </div>
-        <span class="badge">${stock}</span>
+        <span class="badge"></span>
       </button>
     `;
-  });
+  }).join('');
 
   container.innerHTML = `
     <div class="shelf-panel">
@@ -40,12 +32,47 @@ export function renderShelf(container: HTMLElement): void {
     </div>
   `;
 
-  container.querySelectorAll('.ingredient-card:not([disabled])').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-id');
-      if (id) {
-        gameStore.addIngredientToCauldron(id);
-      }
-    });
+  // Jeden listener (event delegation) - przeżyje wszystkie aktualizacje,
+  // bo elementy .ingredient-card nie są już niszczone.
+  container.querySelector('.shelf-cards')!.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.ingredient-card');
+    if (!btn || btn.disabled) return;
+
+    const id = btn.dataset.id;
+    if (id) {
+      gameStore.addIngredientToCauldron(id);
+    }
+  });
+}
+
+export function renderShelf(container: HTMLElement): void {
+  // Struktura powstaje tylko wtedy, gdy jeszcze jej nie ma.
+  if (!container.querySelector('.shelf-panel')) {
+    buildShelf(container);
+  }
+
+  const state = gameStore.getState();
+  const isCauldronFull = state.cauldronIngredients.length >= MAX_CAULDRON;
+
+  // Aktualizujemy tylko to, co zależy od stanu.
+  container.querySelectorAll<HTMLButtonElement>('.ingredient-card').forEach((btn) => {
+    const id = btn.dataset.id!;
+    const stock = state.shelfStock[id] ?? 0;
+    const isEmpty = stock <= 0;
+    const isDisabled = isEmpty || isCauldronFull;
+
+    if (btn.disabled !== isDisabled) btn.disabled = isDisabled;
+    btn.classList.toggle('empty', isEmpty);
+    btn.classList.toggle('disabled', isDisabled);
+
+    const badge = btn.querySelector<HTMLElement>('.badge')!;
+    const stockText = String(stock);
+    if (badge.textContent !== stockText) badge.textContent = stockText;
+
+    // visibility zamiast usuwania <img>, żeby obrazek nie ładował się od nowa.
+    const img = btn.querySelector<HTMLImageElement>('img');
+    if (img) {
+      img.style.visibility = isEmpty ? 'hidden' : 'visible';
+    }
   });
 }
