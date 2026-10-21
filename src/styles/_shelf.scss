@@ -1,0 +1,99 @@
+@import 'variables';
+
+.shelf-panel {
+  background-color: $panel-bg;
+  border: 2px solid $border-color;
+  border-radius: 8px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+
+  h3 {
+    margin-top: 0;
+    color: $accent-color;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 10px;
+  }
+
+  .shelf-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.ingredient-card {
+  display: flex;
+  align-items: center;
+  background-color: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  padding: 10px 15px;
+  color: $text-color;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  text-align: left;
+  width: 100%;
+
+  &:hover:not(:disabled) {
+    border-color: $accent-color;
+    background-color: #353545;
+    transform: translateY(-2px);
+  }
+
+  .icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    min-width: 35px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .name {
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+
+    .stats {
+      font-size: 0.75rem;
+      color: #aaa;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .badge {
+    background-color: $accent-color;
+    color: #000;
+    font-weight: bold;
+    font-size: 0.85rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+
+  &.empty, &.disabled:disabled {
+    background-color: $disabled-bg;
+    border-color: #222;
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+
+    .badge {
+      background-color: #444;
+      color: #888;
+    }
+  }
+}

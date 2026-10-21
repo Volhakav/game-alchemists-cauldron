@@ -1,0 +1,65 @@
+@import 'variables';
+
+.cauldron-panel {
+  background-color: $panel-bg;
+  border: 2px solid $border-color;
+  border-radius: 8px;
+  padding: 20px;
+  width: 350px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    margin-top: 0;
+    color: $accent-color;
+    font-size: 1.4rem;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 10px;
+  }
+
+  .cauldron-counter {
+    font-size: 0.9rem;
+    color: #bbb;
+    margin-bottom: 15px;
+  }
+
+  .cauldron-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+    border: 2px dashed $border-color;
+    border-radius: 6px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+
+    .empty-text {
+      color: #666;
+      text-align: center;
+      margin-top: 70px;
+      font-style: italic;
+    }
+
+    .cauldron-item {
+      display: flex;
+      align-items: center;
+      background-color: #252530;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border-left: 4px solid $accent-color;
+
+      .icon {
+        font-size: 1.5rem;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+      }
+
+      .name {
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+    }
+  }
+}
