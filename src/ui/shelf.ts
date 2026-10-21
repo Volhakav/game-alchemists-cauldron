@@ -1,9 +1,10 @@
 import { INGREDIENTS } from '../data/ingredients';
+import { INGREDIENT_IMAGES } from '../data/icons';
 import { gameStore } from '../state/game-state';
 
 export function renderShelf(container: HTMLElement): void {
   const state = gameStore.getState();
-  const activeIngredients = INGREDIENTS.slice(0, 6);
+  const activeIngredients = INGREDIENTS;
   const isCauldronFull = state.cauldronIngredients.length >= 4;
 
   let cardsHtml = '';
@@ -12,13 +13,15 @@ export function renderShelf(container: HTMLElement): void {
     const stock = state.shelfStock[ing.id] ?? 0;
     const isEmpty = stock <= 0;
     const isDisabled = isEmpty || isCauldronFull;
-    const iconDisplay = isEmpty ? '' : ing.icon;
+    const imgUrl = isEmpty ? '' : (INGREDIENT_IMAGES[ing.id] || '');
 
     cardsHtml += `
       <button class="ingredient-card ${isEmpty ? 'empty' : ''} ${isDisabled ? 'disabled' : ''}" 
               data-id="${ing.id}" 
               ${isDisabled ? 'disabled' : ''}>
-        <span class="icon">${iconDisplay}</span>
+        <span class="icon">
+          ${isEmpty ? '' : `<img src="${imgUrl}" alt="${ing.name}" width="36" height="36" />`}
+        </span>
         <div class="info">
           <span class="name">${ing.name}</span>
           <span class="stats">T${ing.temperature} D${ing.density} M${ing.magicPower}</span>
