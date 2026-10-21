@@ -55,7 +55,6 @@
     padding: 6px;
     border-radius: 4px;
     background-color: #252530;
-    transition: all 0.3s ease;
 
     &.max-reached {
       background-color: rgba(239, 68, 68, 0.2);
@@ -67,6 +66,8 @@
   }
 
   .brew-btn {
+    box-sizing: border-box;
+    outline: none;
     background: linear-gradient(135deg, $accent-color, #aa820a);
     color: #000;
     font-weight: bold;
@@ -77,12 +78,21 @@
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: all 0.2s ease;
     box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+
+    * {
+      pointer-events: none;
+    }
 
     &:hover:not(:disabled) {
       filter: brightness(1.15);
       transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.6);
+    }
+
+    &:focus, &:active {
+      outline: none;
     }
 
     &:disabled {
@@ -90,6 +100,7 @@
       color: #777;
       cursor: not-allowed;
       box-shadow: none;
+      transform: none;
     }
   }
 }

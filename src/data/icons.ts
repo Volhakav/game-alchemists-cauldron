@@ -96,5 +96,5 @@ export const INGREDIENT_IMAGES: Record<string, string> = {
       <path d="M30 40 L35 22 L40 40 Z" fill="url(#sc-grad)" stroke="#fef08a" stroke-width="1"/>
       <polygon points="10,42 38,42 42,45 8,45" fill="#713f12"/>
     </svg>
-  `)
+  `),
 };
