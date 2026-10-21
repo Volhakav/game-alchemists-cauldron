@@ -1,6 +1,6 @@
 $bg-color: #121214;
 $panel-bg: #1e1e24;
-$accent-color: #d4af37; // Золотистый алхимический цвет
+$accent-color: #d4af37; 
 $text-color: #e0e0e0;
 $border-color: #33333d;
 $card-bg: #2a2a35;
@@ -44,7 +44,6 @@ body {
   }
 }
 
-// Стили полки ингредиентов
 .shelf-panel {
   background-color: $panel-bg;
   border: 2px solid $border-color;
@@ -67,7 +66,6 @@ body {
   }
 }
 
-// Карточка ингредиента (кнопка)
 .ingredient-card {
   display: flex;
   align-items: center;
@@ -127,7 +125,6 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   }
 
-  // Состояние, когда запас равен 0 (пустой слот)
   &.empty, &.disabled:disabled {
     background-color: $disabled-bg;
     border-color: #222;
@@ -142,7 +139,6 @@ body {
   }
 }
 
-// Стили котла
 .cauldron-panel {
   background-color: $panel-bg;
   border: 2px solid $border-color;
@@ -200,6 +196,91 @@ body {
       .name {
         font-weight: 500;
         font-size: 0.95rem;
+      }
+    }
+  }
+}
+
+.bars-panel {
+  background-color: #1e1e24;
+  border: 2px solid #33333d;
+  border-radius: 8px;
+  padding: 20px;
+  width: 350px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  h3 {
+    margin-top: 0;
+    color: #d4af37;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #33333d;
+    padding-bottom: 8px;
+  }
+
+  .bar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    label {
+      font-size: 0.85rem;
+      color: #ccc;
+      display: flex;
+      justify-content: space-between;
+
+      span {
+        font-weight: bold;
+        color: #fff;
+      }
+    }
+
+    .progress-bar-container {
+      position: relative;
+      height: 16px;
+      background-color: #111;
+      border-radius: 8px;
+      border: 1px solid #444;
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+
+      &.glow {
+        box-shadow: 0 0 10px 2px rgba(76, 175, 80, 0.8);
+        border-color: #4caf50;
+      }
+
+      .target-zone {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background-color: rgba(76, 175, 80, 0.35);
+        border-left: 1px dashed #4caf50;
+        border-right: 1px dashed #4caf50;
+      }
+
+      .center-line {
+        position: absolute;
+        left: 33.33%; 
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: #666;
+        z-index: 1;
+      }
+
+      .marker {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background-color: #d4af37;
+        border-radius: 2px;
+        transform: translateX(-50%);
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        z-index: 2;
+        box-shadow: 0 0 5px rgba(212, 175, 55, 0.8);
       }
     }
   }
