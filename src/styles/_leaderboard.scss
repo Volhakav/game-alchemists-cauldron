@@ -1,0 +1,420 @@
+@import 'variables';
+
+// Leaderboard Screen / Modal
+.leaderboard-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 20px;
+  box-sizing: border-box;
+
+  .leaderboard-modal {
+    background-color: $panel-bg;
+    border: 2px solid $accent-color;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 35px rgba(212, 175, 55, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 650px;
+    max-width: 95vw;
+    position: relative;
+
+    .leaderboard-header {
+      text-align: center;
+      border-bottom: 1px solid $border-color;
+      padding-bottom: 15px;
+
+      h2 {
+        color: $accent-color;
+        font-size: 1.8rem;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .subtitle {
+        color: #999;
+        font-size: 0.9rem;
+        margin: 5px 0 0 0;
+        font-style: italic;
+      }
+    }
+
+    .leaderboard-table-container {
+      max-height: 400px;
+      overflow-y: auto;
+      border-radius: 6px;
+      border: 1px solid $border-color;
+      background-color: rgba(0, 0, 0, 0.3);
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #444;
+        border-radius: 4px;
+      }
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+
+      thead {
+        background-color: #121217;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+
+        th {
+          padding: 12px 14px;
+          color: $accent-color;
+          font-weight: 600;
+          text-transform: uppercase;
+          font-size: 0.85rem;
+          letter-spacing: 1px;
+          border-bottom: 2px solid $border-color;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          transition: background-color 0.2s ease;
+
+          &:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+          }
+
+          &:hover {
+            background-color: rgba(212, 175, 55, 0.08);
+          }
+
+          td {
+            padding: 10px 14px;
+            color: $text-color;
+            vertical-align: middle;
+          }
+        }
+
+        .col-rank {
+          width: 70px;
+          text-align: center;
+
+          .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+
+            &.gold {
+              background-color: rgba(255, 215, 0, 0.15);
+              border: 1px solid #ffd700;
+              color: #ffd700;
+              text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+            }
+
+            &.silver {
+              background-color: rgba(192, 192, 192, 0.15);
+              border: 1px solid #c0c0c0;
+              color: #e0e0e0;
+            }
+
+            &.bronze {
+              background-color: rgba(205, 127, 50, 0.15);
+              border: 1px solid #cd7f32;
+              color: #f0a060;
+            }
+          }
+
+          .rank-number {
+            font-weight: 600;
+            color: #888;
+          }
+        }
+
+        .col-name {
+          font-weight: 500;
+          color: #fff;
+          max-width: 180px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .col-score {
+          color: $accent-color;
+          font-weight: bold;
+          font-size: 1.05rem;
+        }
+
+        .col-date {
+          color: #888;
+          font-size: 0.85rem;
+          white-space: nowrap;
+        }
+
+        .empty-leaderboard {
+          text-align: center;
+          padding: 30px 15px;
+          color: #777;
+          font-style: italic;
+        }
+      }
+    }
+
+    .leaderboard-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 10px;
+
+      button {
+        padding: 12px 24px;
+        font-size: 0.95rem;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: none;
+        transition: filter 0.2s ease, transform 0.2s ease;
+
+        &:hover {
+          filter: brightness(1.15);
+          transform: translateY(-2px);
+        }
+      }
+
+      .clear-btn {
+        background: linear-gradient(135deg, #ef4444, #991b1b);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      }
+
+      .back-btn {
+        background: linear-gradient(135deg, $accent-color, #aa820a);
+        color: #000;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+      }
+    }
+  }
+}
+
+// In-App Custom Confirmation Dialog
+.confirm-dialog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: 12px;
+
+  .confirm-dialog-box {
+    background-color: #16161c;
+    border: 2px solid #ef4444;
+    border-radius: 10px;
+    padding: 25px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    h3 {
+      margin: 0;
+      color: #ef4444;
+      font-size: 1.3rem;
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 0;
+      color: #ccc;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .confirm-dialog-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 5px;
+
+      button {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+
+        &:hover {
+          filter: brightness(1.15);
+        }
+      }
+
+      .confirm-cancel-btn {
+        background: #333;
+        color: #ddd;
+      }
+
+      .confirm-danger-btn {
+        background: #ef4444;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+      }
+    }
+  }
+}
+
+// Start Screen Menu Leaderboard Button
+.menu-leaderboard-btn {
+  background: transparent !important;
+  color: $accent-color !important;
+  border: 2px solid $accent-color !important;
+  box-shadow: none !important;
+
+  &:hover {
+    background: rgba(212, 175, 55, 0.15) !important;
+  }
+}
+
+// Game Over Screen Additions (Top-10 name input and action buttons)
+.game-over-modal {
+  width: 420px !important; // wider to fit input and buttons comfortably
+
+  .top10-congrats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px dashed $accent-color;
+    border-radius: 8px;
+    padding: 14px;
+    margin: 5px 0;
+
+    .badge-new-record {
+      color: $accent-color;
+      font-weight: bold;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .name-label {
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: center;
+
+      .player-name-input {
+        width: 100%;
+        padding: 10px 14px;
+        background-color: #121217;
+        border: 1px solid $border-color;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+        text-align: center;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:focus {
+          border-color: $accent-color;
+          box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
+
+        &.input-error {
+          border-color: #ef4444;
+          box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+        }
+      }
+    }
+
+    .name-validation-error {
+      color: #ef4444;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+  }
+
+  .score-submitted-notice, .not-top10-notice {
+    padding: 10px;
+    font-size: 0.9rem;
+    color: #aaa;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .score-submitted-notice {
+    color: #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+  }
+
+  .game-over-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    button {
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: none;
+      transition: filter 0.2s ease, transform 0.2s ease;
+
+      &:hover {
+        filter: brightness(1.15);
+        transform: translateY(-2px);
+      }
+    }
+
+    .submit-score-btn {
+      background: linear-gradient(135deg, $accent-color, #aa820a);
+      color: #000;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+    }
+
+    .play-again-btn {
+      background: linear-gradient(135deg, #ef4444, #991b1b);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .game-over-leaderboard-btn {
+      background: transparent;
+      color: $accent-color;
+      border: 1px solid $accent-color;
+      box-shadow: none;
+
+      &:hover {
+        background: rgba(212, 175, 55, 0.15);
+      }
+    }
+  }
+}

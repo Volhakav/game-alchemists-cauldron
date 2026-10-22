@@ -5,6 +5,9 @@ import { renderCauldron } from './ui/cauldron';
 import { renderBars } from './ui/bars';
 import { renderRecipePanel } from './ui/recipe';
 import { renderGameOver } from './ui/gameOver';
+import { renderMenu } from './ui/menu';
+import { renderPauseModal } from './ui/pauseModal';
+import { renderLeaderboard } from './ui/leaderboard';
 import { formatTime } from './logic/time';
 
 const app = document.querySelector('#app') as HTMLElement;
@@ -13,7 +16,10 @@ function buildGameLayout(container: HTMLElement) {
   container.innerHTML = `
     <div class="game-container">
       <header class="game-header">
-        <h1>Alchemist's Cauldron</h1>
+        <div class="header-top">
+          <h1>Alchemist's Cauldron</h1>
+          <button class="pause-btn" id="pause-trigger-btn" title="Pause">⏸</button>
+        </div>
         <div class="game-stats">
           <span>Score: <strong id="score-text">0</strong></span>
           <span>Lives: <strong id="lives-text"></strong></span>
@@ -33,22 +39,62 @@ function buildGameLayout(container: HTMLElement) {
       </main>
     </div>
   `;
+
+  document.getElementById('pause-trigger-btn')?.addEventListener('click', () => {
+    gameStore.pauseGame();
+  });
 }
 
 function initApp() {
   const updateUI = () => {
-    const state = gameStore.getState() as any;
+    const state = gameStore.getState();
 
-    if (state.status === 'game-over') {
-      if (!document.getElementById('game-over-container')) {
-        app.innerHTML = `<div id="game-over-container"></div>`;
-        renderGameOver(document.getElementById('game-over-container') as HTMLElement);
+    if (state.status === 'menu') {
+      if (!document.getElementById('menu-root')) {
+        app.innerHTML = `<div id="menu-root"></div>`;
+        renderMenu(document.getElementById('menu-root') as HTMLElement);
       }
       return;
     }
 
+    if (state.status === 'leaderboard') {
+      if (!document.getElementById('leaderboard-root')) {
+        app.innerHTML = `<div id="leaderboard-root"></div>`;
+        renderLeaderboard(document.getElementById('leaderboard-root') as HTMLElement);
+      }
+      return;
+    }
+
+    if (state.status === 'game-over') {
+      if (!document.getElementById('game-over-container')) {
+        app.innerHTML = `<div id="game-over-container"></div>`;
+      }
+      renderGameOver(document.getElementById('game-over-container') as HTMLElement);
+      return;
+    }
+
+    const isPaused = state.status === 'paused';
+
     if (!app.querySelector('.game-container')) {
       buildGameLayout(app);
+    }
+
+    const gameContainer = app.querySelector<HTMLElement>('.game-container');
+    if (gameContainer) {
+      gameContainer.classList.toggle('blurred', isPaused);
+    }
+
+    let pauseModalContainer = document.getElementById('pause-modal-container');
+    if (isPaused) {
+      if (!pauseModalContainer) {
+        pauseModalContainer = document.createElement('div');
+        pauseModalContainer.id = 'pause-modal-container';
+        app.appendChild(pauseModalContainer);
+        renderPauseModal(pauseModalContainer);
+      }
+      return;
+    } else if (pauseModalContainer) {
+      pauseModalContainer.remove();
     }
 
     const scoreText = document.getElementById('score-text');
