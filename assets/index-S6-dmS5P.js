@@ -1,0 +1,410 @@
+(function(){let e=document.createElement(`link`).relList;if(e&&e.supports&&e.supports(`modulepreload`))return;for(let e of document.querySelectorAll(`link[rel="modulepreload"]`))n(e);new MutationObserver(e=>{for(let t of e)if(t.type===`childList`)for(let e of t.addedNodes)e.tagName===`LINK`&&e.rel===`modulepreload`&&n(e)}).observe(document,{childList:!0,subtree:!0});function t(e){let t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),t.credentials=e.crossOrigin===`use-credentials`?`include`:e.crossOrigin===`anonymous`?`omit`:`same-origin`,t}function n(e){if(e.ep)return;e.ep=!0;let n=t(e);fetch(e.href,n)}})();var e=[{id:`dragon-tears`,name:`Dragon Tears`,icon:`dragon-tears`,temperature:25,density:8,magicPower:10},{id:`fairy-dust`,name:`Fairy Dust`,icon:`fairy-dust`,temperature:12,density:9,magicPower:12},{id:`frost-lotus`,name:`Frost Lotus`,icon:`frost-lotus`,temperature:-18,density:4,magicPower:14},{id:`mandrake-root`,name:`Mandrake Root`,icon:`mandrake-root`,temperature:-5,density:20,magicPower:8},{id:`caustic-acid`,name:`Caustic Acid`,icon:`caustic-acid`,temperature:10,density:14,magicPower:22},{id:`essence-of-the-void`,name:`Essence of the Void`,icon:`essence-of-the-void`,temperature:-20,density:-10,magicPower:40},{id:`phoenix-feather`,name:`Phoenix Feather`,icon:`phoenix-feather`,temperature:50,density:-10,magicPower:30},{id:`toad-slime`,name:`Toad Slime`,icon:`toad-slime`,temperature:5,density:30,magicPower:0}],t=[{id:`easy-moon-mist`,name:`Moon Mist`,difficulty:`easy`,temperature:{min:32,max:42},density:{min:12,max:22},magicPower:{min:17,max:27}},{id:`easy-root-bloom`,name:`Root Bloom`,difficulty:`easy`,temperature:{min:2,max:12},density:{min:24,max:34},magicPower:{min:15,max:25}},{id:`easy-frost-steam`,name:`Frost Steam`,difficulty:`easy`,temperature:{min:2,max:12},density:{min:7,max:17},magicPower:{min:19,max:29}},{id:`easy-quiet-swirl`,name:`Quiet Swirl`,difficulty:`easy`,temperature:{min:-28,max:-18},density:{min:19,max:29},magicPower:{min:17,max:27}},{id:`easy-bright-dew`,name:`Bright Dew`,difficulty:`easy`,temperature:{min:27,max:37},density:{min:32,max:42},magicPower:{min:25,max:35}},{id:`easy-snow-dust`,name:`Snow Dust`,difficulty:`easy`,temperature:{min:-16,max:-6},density:{min:28,max:38},magicPower:{min:29,max:39}},{id:`med-acid-spark`,name:`Acid Spark`,difficulty:`medium`,temperature:{min:17,max:27},density:{min:18,max:28},magicPower:{min:29,max:39}},{id:`med-void-ember`,name:`Void Ember`,difficulty:`medium`,temperature:{min:0,max:10},density:{min:0,max:10},magicPower:{min:45,max:55}},{id:`med-heavy-acid`,name:`Heavy Acid`,difficulty:`medium`,temperature:{min:0,max:10},density:{min:29,max:39},magicPower:{min:25,max:35}},{id:`med-frost-acid`,name:`Frost Acid`,difficulty:`medium`,temperature:{min:-13,max:-3},density:{min:13,max:23},magicPower:{min:31,max:41}},{id:`med-dusty-void`,name:`Dusty Void`,difficulty:`medium`,temperature:{min:-13,max:-3},density:{min:0,max:10},magicPower:{min:47,max:57}},{id:`med-dragon-void`,name:`Dragon Void`,difficulty:`medium`,temperature:{min:25,max:35},density:{min:1,max:11},magicPower:{min:55,max:65}},{id:`med-rooted-night`,name:`Rooted Night`,difficulty:`medium`,temperature:{min:-18,max:-8},density:{min:14,max:24},magicPower:{min:55,max:65}},{id:`hard-phoenix-pulse`,name:`Phoenix Pulse`,difficulty:`hard`,temperature:{min:57,max:67},density:{min:0,max:10},magicPower:{min:37,max:47}},{id:`hard-slime-crown`,name:`Slime Crown`,difficulty:`hard`,temperature:{min:-5,max:5},density:{min:45,max:55},magicPower:{min:3,max:13}},{id:`hard-void-flame`,name:`Void Flame`,difficulty:`hard`,temperature:{min:25,max:35},density:{min:0,max:10},magicPower:{min:60,max:70}},{id:`hard-acid-bog`,name:`Acid Bog`,difficulty:`hard`,temperature:{min:10,max:20},density:{min:39,max:49},magicPower:{min:17,max:27}},{id:`hard-frozen-ash`,name:`Frozen Ash`,difficulty:`hard`,temperature:{min:27,max:37},density:{min:0,max:10},magicPower:{min:39,max:49}},{id:`hard-triple-eclipse`,name:`Triple Eclipse`,difficulty:`hard`,temperature:{min:-20,max:-10},density:{min:19,max:29},magicPower:{min:60,max:70}},{id:`hard-ember-soup`,name:`Ember Soup`,difficulty:`hard`,temperature:{min:62,max:72},density:{min:24,max:34},magicPower:{min:37,max:47}}];function n(e){return t.filter(t=>t.difficulty===e)}function r(t=6){let n={};return e.slice(0,t).forEach(e=>{let t=Math.floor(Math.random()*14)+2;n[e.id]=t}),n}function i(e){return e.reduce((e,t)=>(e.temperature+=t.temperature,e.density+=t.density,e.magicPower+=t.magicPower,e),{temperature:0,density:0,magicPower:0})}function a(e){let t=n(e);return t[Math.floor(Math.random()*t.length)]}var o=new class{state={status:`menu`,score:0,timeLeft:150,lives:3,difficulty:`medium`,activeRecipe:a(`medium`),cauldronIngredients:[],shelfStock:r(6),gameOverReason:void 0};listeners=[];timerInterval=null;endTime=Date.now()+15e4;constructor(){document.addEventListener(`visibilitychange`,()=>{document.hidden&&this.state.status===`playing`&&this.pauseGame()})}getState(){return this.state}subscribe(e){this.listeners.push(e)}notify(){this.listeners.forEach(e=>e(this.state))}startTimer(){this.endTime=Date.now()+this.state.timeLeft*1e3,this.timerInterval&&clearInterval(this.timerInterval),this.timerInterval=window.setInterval(()=>{if(this.state.status!==`playing`)return;let e=this.endTime-Date.now(),t=Math.max(0,Math.ceil(e/1e3)),n=this.state.timeLeft!==t;this.state.timeLeft=t,this.state.timeLeft<=0?this.endGame(`Time's up!`):this.state.lives<=0?this.endGame(`Out of lives!`):this.checkOutOfIngredients()?this.endGame(`Out of ingredients!`):n&&this.notify()},250)}checkOutOfIngredients(){return Object.values(this.state.shelfStock).reduce((e,t)=>e+t,0)===0&&this.state.cauldronIngredients.length===0}leaderboardFrom=`menu`;scoreSubmitted=!1;startGame(){this.scoreSubmitted=!1,this.state={status:`playing`,score:0,timeLeft:150,lives:3,difficulty:`medium`,activeRecipe:a(`medium`),cauldronIngredients:[],shelfStock:r(6),gameOverReason:void 0},this.startTimer(),this.notify()}resetGame(){this.startGame()}openLeaderboard(e=`menu`){this.leaderboardFrom=e,this.state.status=`leaderboard`,this.notify()}closeLeaderboard(){this.state.status=this.leaderboardFrom,this.notify()}isScoreSubmitted(){return this.scoreSubmitted}markScoreSubmitted(){this.scoreSubmitted=!0,this.notify()}pauseGame(){this.state.status===`playing`&&(this.state.status=`paused`,this.timerInterval&&clearInterval(this.timerInterval),this.notify())}resumeGame(){this.state.status===`paused`&&(this.state.status=`playing`,this.endTime=Date.now()+this.state.timeLeft*1e3,this.startTimer(),this.notify())}exitToMenu(){this.state.status=`menu`,this.timerInterval&&clearInterval(this.timerInterval),this.notify()}endGame(e){this.state.status=`game-over`,this.state.gameOverReason=e,this.timerInterval&&clearInterval(this.timerInterval),this.notify()}addIngredientToCauldron(t){if(this.state.status!==`playing`||this.state.cauldronIngredients.length>=4)return!1;let n=this.state.shelfStock[t]??0;if(n<=0)return!1;let r=e.find(e=>e.id===t);return r?(this.state.shelfStock[t]=n-1,this.state.cauldronIngredients.push(r),this.notify(),!0):!1}brew(){if(this.state.status!==`playing`||this.state.cauldronIngredients.length===0)return!1;let e=i(this.state.cauldronIngredients),t=this.state.activeRecipe,n=e.temperature>=t.temperature.min-8&&e.temperature<=t.temperature.max+8,r=e.density>=t.density.min-8&&e.density<=t.density.max+8,o=e.magicPower>=t.magicPower.min-8&&e.magicPower<=t.magicPower.max+8,s=n&&r&&o;if(s){this.state.score+=200,this.state.timeLeft=Math.min(150,this.state.timeLeft+10),this.endTime=Date.now()+this.state.timeLeft*1e3;let e=this.state.difficulty||`medium`;this.state.activeRecipe=a(e)}else--this.state.lives,this.state.lives<=0&&this.endGame(`Out of lives!`);return this.state.cauldronIngredients=[],this.notify(),s}},s=e=>`data:image/svg+xml;utf8,${encodeURIComponent(e.trim())}`,c={"dragon-tears":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="dt-glass" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.95"/>
+        </linearGradient>
+        <linearGradient id="dt-liquid" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#60a5fa"/>
+          <stop offset="100%" stop-color="#2563eb"/>
+        </linearGradient>
+      </defs>
+      <rect x="20" y="6" width="8" height="5" rx="1" fill="#78350f" stroke="#451a03" stroke-width="1"/>
+      <path d="M19 11 h10 v2 h-10 z" fill="#b45309"/>
+      <path d="M20 13 h8 v7 c4 2, 7 6, 7 12 a 10 10 0 0 1 -20 0 c0 -6, 3 -10, 5 -12 v-7 z" fill="url(#dt-glass)" stroke="#bfdbfe" stroke-width="1.5"/>
+      <path d="M17 25 c3 -1, 7 1, 14 0 c2 3, 3 6, 3 7 a 9 9 0 0 1 -18 0 c0 -2, 0 -5, 1 -7 z" fill="url(#dt-liquid)" opacity="0.85"/>
+      <circle cx="21" cy="31" r="1.5" fill="#eff6ff" opacity="0.8"/>
+      <circle cx="26" cy="34" r="1" fill="#eff6ff" opacity="0.8"/>
+      <path d="M21 16 a 3 8 0 0 0 2 6" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+    </svg>
+  `),"fairy-dust":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="fd-glass" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f5d0fe" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#7e22ce" stop-opacity="0.9"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="24" cy="9" rx="5" ry="2" fill="#d97706"/>
+      <rect x="19" y="9" width="10" height="4" rx="1" fill="#b45309" stroke="#78350f" stroke-width="1"/>
+      <path d="M19 13 h10 l2 5 c2 3, 3 6, 3 10 a 11 11 0 0 1 -22 0 c0 -4, 1 -7, 3 -10 l2 -5 z" fill="url(#fd-glass)" stroke="#e879f9" stroke-width="1.5"/>
+      <circle cx="24" cy="27" r="6" fill="#c084fc" opacity="0.6"/>
+      <path d="M24 20 l1 3 3 1 -3 1 -1 3 -1 -3 -3 -1 3 -1 z" fill="#fef08a"/>
+      <path d="M18 30 l0.5 1.5 1.5 0.5 -1.5 0.5 -0.5 1.5 -0.5 -1.5 -1.5 -0.5 1.5 -0.5 z" fill="#fef08a"/>
+      <path d="M30 25 l0.5 1.5 1.5 0.5 -1.5 0.5 -0.5 1.5 -0.5 -1.5 -1.5 -0.5 1.5 -0.5 z" fill="#fef08a"/>
+    </svg>
+  `),"frost-lotus":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="fl-ice" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#e0f2fe"/>
+          <stop offset="50%" stop-color="#38bdf8"/>
+          <stop offset="100%" stop-color="#0284c7"/>
+        </linearGradient>
+      </defs>
+      <path d="M24 8 C20 18, 12 22, 12 32 C12 38, 18 42, 24 42 C30 42, 36 38, 36 32 C36 22, 28 18, 24 8 Z" fill="url(#fl-ice)" stroke="#bae6fd" stroke-width="1.5"/>
+      <path d="M24 16 C21 23, 16 26, 16 33 C16 37, 19 40, 24 40 C29 40, 32 37, 32 33 C32 26, 27 23, 24 16 Z" fill="#7dd3fc" opacity="0.7"/>
+      <path d="M24 22 C22 26, 19 28, 19 33 C19 36, 21 38, 24 38 C27 38, 29 36, 29 33 C29 28, 26 26, 24 22 Z" fill="#ffffff" opacity="0.9"/>
+      <circle cx="24" cy="33" r="2" fill="#0284c7"/>
+    </svg>
+  `),"mandrake-root":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="mr-body" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#84cc16"/>
+          <stop offset="100%" stop-color="#365314"/>
+        </linearGradient>
+      </defs>
+      <path d="M24 18 Q 14 10, 10 14 Q 14 20, 24 20 Z" fill="#22c55e" stroke="#14532d" stroke-width="1"/>
+      <path d="M24 18 Q 34 10, 38 14 Q 34 20, 24 20 Z" fill="#22c55e" stroke="#14532d" stroke-width="1"/>
+      <path d="M24 18 Q 24 8, 24 12 Q 24 16, 24 20 Z" fill="#16a34a"/>
+      <path d="M19 18 c-3 4, -4 10, -2 16 c1 3, -3 8, -5 10 c3 0, 6 -4, 7 -7 c1 4, 3 7, 6 7 c3 0, 5 -3, 6 -7 c1 3, 4 7, 7 7 c-2 -2, -6 -7, -5 -10 c2 -6, 1 -12, -2 -16 z" fill="url(#mr-body)" stroke="#1a2e05" stroke-width="1.5"/>
+      <circle cx="21" cy="24" r="1.2" fill="#000"/>
+      <circle cx="27" cy="24" r="1.2" fill="#000"/>
+      <path d="M23 28 q1 1 2 0" stroke="#000" stroke-width="1" stroke-linecap="round" fill="none"/>
+    </svg>
+  `),"mandragora-root":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="mr2-body" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#84cc16"/>
+          <stop offset="100%" stop-color="#365314"/>
+        </linearGradient>
+      </defs>
+      <path d="M24 18 Q 14 10, 10 14 Q 14 20, 24 20 Z" fill="#22c55e" stroke="#14532d" stroke-width="1"/>
+      <path d="M24 18 Q 34 10, 38 14 Q 34 20, 24 20 Z" fill="#22c55e" stroke="#14532d" stroke-width="1"/>
+      <path d="M24 18 Q 24 8, 24 12 Q 24 16, 24 20 Z" fill="#16a34a"/>
+      <path d="M19 18 c-3 4, -4 10, -2 16 c1 3, -3 8, -5 10 c3 0, 6 -4, 7 -7 c1 4, 3 7, 6 7 c3 0, 5 -3, 6 -7 c1 3, 4 7, 7 7 c-2 -2, -6 -7, -5 -10 c2 -6, 1 -12, -2 -16 z" fill="url(#mr2-body)" stroke="#1a2e05" stroke-width="1.5"/>
+      <circle cx="21" cy="24" r="1.2" fill="#000"/>
+      <circle cx="27" cy="24" r="1.2" fill="#000"/>
+      <path d="M23 28 q1 1 2 0" stroke="#000" stroke-width="1" stroke-linecap="round" fill="none"/>
+    </svg>
+  `),"caustic-acid":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ca-liquid" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#a3e635"/>
+          <stop offset="100%" stop-color="#4d7c0f"/>
+        </linearGradient>
+      </defs>
+      <rect x="21" y="6" width="6" height="6" fill="#78350f" stroke="#451a03" stroke-width="1"/>
+      <path d="M20 12 h8 l7 18 a 9 9 0 0 1 -7 12 h-8 a 9 9 0 0 1 -7 -12 l7 -18 z" fill="#1e293b" stroke="#84cc16" stroke-width="1.5" opacity="0.85"/>
+      <path d="M17 28 c2 -1, 5 1, 14 0 c1 3, 2 5, 2 7 a 7 7 0 0 1 -7 7 h-4 a 7 7 0 0 1 -7 -7 c0 -2, 1 -4, 2 -7 z" fill="url(#ca-liquid)"/>
+      <circle cx="21" cy="33" r="1.5" fill="#ecfccb"/>
+      <circle cx="27" cy="31" r="1.2" fill="#ecfccb"/>
+      <circle cx="24" cy="36" r="1.8" fill="#ecfccb"/>
+    </svg>
+  `),"essence-of-the-void":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="ev-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#c084fc"/>
+          <stop offset="60%" stop-color="#581c87"/>
+          <stop offset="100%" stop-color="#090514"/>
+        </radialGradient>
+      </defs>
+      <circle cx="24" cy="24" r="17" fill="url(#ev-glow)" stroke="#a855f7" stroke-width="1.5"/>
+      <path d="M24 11 A 13 13 0 0 0 11 24" stroke="#e9d5ff" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+      <circle cx="24" cy="24" r="7" fill="#000" stroke="#d8b4fe" stroke-width="1"/>
+      <circle cx="24" cy="24" r="2.5" fill="#fdf4ff"/>
+      <path d="M15 15 l1 2 2 1 -2 1 -1 2 -1 -2 -2 -1 2 -1 z" fill="#e879f9" opacity="0.9"/>
+      <path d="M31 31 l0.8 1.5 1.5 0.8 -1.5 0.8 -0.8 1.5 -0.8 -1.5 -1.5 -0.8 1.5 -0.8 z" fill="#e879f9" opacity="0.9"/>
+    </svg>
+  `),"phoenix-feather":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pf-fire" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#ea580c"/>
+          <stop offset="50%" stop-color="#f97316"/>
+          <stop offset="100%" stop-color="#facc15"/>
+        </linearGradient>
+      </defs>
+      <path d="M12 40 C14 34, 18 20, 36 8 C36 18, 30 30, 16 38 Z" fill="url(#pf-fire)" stroke="#fdba74" stroke-width="1.5"/>
+      <path d="M10 42 Q 22 28, 38 6" stroke="#fef08a" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M16 32 L 22 29 M 20 25 L 27 22 M 25 18 L 32 15" stroke="#fef08a" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+  `),"toad-slime":s(`
+    <svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ts-slime" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#4ade80"/>
+          <stop offset="100%" stop-color="#15803d"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="24" cy="34" rx="14" ry="7" fill="#14532d"/>
+      <path d="M24 10 C18 18, 12 24, 12 32 A 12 10 0 0 0 36 32 C36 24, 30 18, 24 10 Z" fill="url(#ts-slime)" stroke="#86efac" stroke-width="1.5"/>
+      <ellipse cx="20" cy="28" rx="2" ry="3" fill="#bbf7d0" opacity="0.8"/>
+      <ellipse cx="28" cy="31" rx="1.5" ry="2" fill="#bbf7d0" opacity="0.8"/>
+      <circle cx="23" cy="20" r="1.5" fill="#f0fdf4" opacity="0.9"/>
+    </svg>
+  `)},l=4;function u(t){let n=o.getState();t.innerHTML=`
+    <div class="shelf-panel">
+      <h3>Ingredients</h3>
+      <div class="shelf-cards">
+        ${e.filter(e=>n.shelfStock[e.id]!==void 0).map(e=>{let t=c[e.id]||``,n=e.temperature>0?`+${e.temperature}`:`${e.temperature}`,r=e.density>0?`+${e.density}`:`${e.density}`,i=e.magicPower>0?`+${e.magicPower}`:`${e.magicPower}`;return`
+        <button class="ingredient-card" data-id="${e.id}">
+          <span class="icon">
+            ${t?`<img src="${t}" alt="${e.name}" width="36" height="36" />`:``}
+          </span>
+          <div class="info">
+            <span class="name">${e.name}</span>
+            <span class="stats">T${n} D${r} M${i}</span>
+          </div>
+          <span class="badge"></span>
+        </button>
+      `}).join(``)}
+      </div>
+    </div>
+  `,t.querySelector(`.shelf-cards`).addEventListener(`click`,e=>{let t=e.target.closest(`.ingredient-card`);if(!t||t.disabled)return;let n=t.dataset.id;n&&o.addIngredientToCauldron(n)})}function d(e){e.querySelector(`.shelf-panel`)||u(e);let t=o.getState(),n=t.cauldronIngredients.length>=l;e.querySelectorAll(`.ingredient-card`).forEach(e=>{let r=e.dataset.id,i=t.shelfStock[r]??0,a=i<=0,o=a||n;e.disabled!==o&&(e.disabled=o),e.classList.toggle(`empty`,a),e.classList.toggle(`disabled`,o);let s=e.querySelector(`.badge`),c=String(i);s.textContent!==c&&(s.textContent=c);let l=e.querySelector(`img`);l&&(l.style.visibility=a?`hidden`:`visible`)})}var f=4;function p(e){e.innerHTML=`
+    <div class="cauldron-panel">
+      <h2>Alchemist's Cauldron</h2>
+      <div class="cauldron-counter">Ingredients: 0 / ${f}</div>
+      <div class="cauldron-list">
+        <p class="empty-text">Drop ingredients here...</p>
+      </div>
+    </div>
+  `}function m(e){e.querySelector(`.cauldron-panel`)||p(e);let t=o.getState(),n=t.cauldronIngredients.length,r=e.querySelector(`.cauldron-counter`),i=`Ingredients: ${n} / ${f}`;r&&r.textContent!==i&&(r.textContent=i);let a=e.querySelector(`.cauldron-list`);if(a){let e=``;n===0?e=`<p class="empty-text">Drop ingredients here...</p>`:t.cauldronIngredients.forEach((t,n)=>{let r=c[t.id]||``;e+=`
+          <div class="cauldron-item" data-index="${n}">
+            <span class="icon">
+              <img src="${r}" alt="${t.name}" width="32" height="32" />
+            </span>
+            <span class="name">${t.name}</span>
+          </div>
+        `}),a.innerHTML!==e&&(a.innerHTML=e)}}function h(e){e.innerHTML=`
+    <div class="bars-panel">
+      <h3>Cauldron Parameters</h3>
+      
+      <!-- Temperature Bar -->
+      <div class="bar-row">
+        <label>Temperature: <span data-value="temp">0</span></label>
+        <div class="progress-bar-container" data-bar="temp">
+          <div class="target-zone" data-zone="temp"></div>
+          <div class="center-line"></div>
+          <div class="marker" data-marker="temp"></div>
+        </div>
+      </div>
+
+      <!-- Density Bar -->
+      <div class="bar-row">
+        <label>Density: <span data-value="density">0</span></label>
+        <div class="progress-bar-container" data-bar="density">
+          <div class="target-zone" data-zone="density"></div>
+          <div class="center-line"></div>
+          <div class="marker" data-marker="density"></div>
+        </div>
+      </div>
+
+      <!-- Magic Power Bar -->
+      <div class="bar-row">
+        <label>Magic Power: <span data-value="magic">0</span></label>
+        <div class="progress-bar-container" data-bar="magic">
+          <div class="target-zone" data-zone="magic"></div>
+          <div class="center-line" style="left: 0%;"></div>
+          <div class="marker" data-marker="magic"></div>
+        </div>
+      </div>
+    </div>
+  `}function g(e){e.querySelector(`.bars-panel`)||h(e);let t=o.getState(),n=i(t.cauldronIngredients),r=t.activeRecipe,a=(e,t=-50,n=100)=>(Math.max(t,Math.min(n,e))-t)/(n-t)*100,s=(e,t,n=-50,r=100)=>{let i=a(e,n,r);return{left:i,width:a(t,n,r)-i}},c={min:-50,max:100},l={min:-30,max:60},u={min:0,max:80},d=s(r.temperature.min,r.temperature.max,c.min,c.max),f=s(r.density.min,r.density.max,l.min,l.max),p=s(r.magicPower.min,r.magicPower.max,u.min,u.max),m=n.temperature>=r.temperature.min&&n.temperature<=r.temperature.max,g=n.density>=r.density.min&&n.density<=r.density.max,_=n.magicPower>=r.magicPower.min&&n.magicPower<=r.magicPower.max,v=e.querySelector(`[data-value="temp"]`);v&&v.textContent!==String(n.temperature)&&(v.textContent=String(n.temperature));let y=e.querySelector(`[data-bar="temp"]`);y&&y.classList.toggle(`glow`,m);let b=e.querySelector(`[data-zone="temp"]`);b&&(b.style.left=`${d.left}%`,b.style.width=`${d.width}%`);let x=e.querySelector(`[data-marker="temp"]`);x&&(x.style.left=`${a(n.temperature,c.min,c.max)}%`);let S=e.querySelector(`[data-value="density"]`);S&&S.textContent!==String(n.density)&&(S.textContent=String(n.density));let C=e.querySelector(`[data-bar="density"]`);C&&C.classList.toggle(`glow`,g);let w=e.querySelector(`[data-zone="density"]`);w&&(w.style.left=`${f.left}%`,w.style.width=`${f.width}%`);let T=e.querySelector(`[data-marker="density"]`);T&&(T.style.left=`${a(n.density,l.min,l.max)}%`);let E=e.querySelector(`[data-value="magic"]`);E&&E.textContent!==String(n.magicPower)&&(E.textContent=String(n.magicPower));let D=e.querySelector(`[data-bar="magic"]`);D&&D.classList.toggle(`glow`,_);let O=e.querySelector(`[data-zone="magic"]`);O&&(O.style.left=`${p.left}%`,O.style.width=`${p.width}%`);let k=e.querySelector(`[data-marker="magic"]`);k&&(k.style.left=`${a(n.magicPower,u.min,u.max)}%`)}var _=4;function v(e){e.innerHTML=`
+    <div class="recipe-panel">
+      <h3>Current Recipe</h3>
+      <h2 class="recipe-title"></h2>
+
+      <div class="recipe-ranges">
+        <div class="range-row">
+          <span>Temp:</span>
+          <strong data-range="temperature"></strong>
+        </div>
+        <div class="range-row">
+          <span>Density:</span>
+          <strong data-range="density"></strong>
+        </div>
+        <div class="range-row">
+          <span>Magic:</span>
+          <strong data-range="magicPower"></strong>
+        </div>
+      </div>
+
+      <div class="recipe-counter"></div>
+
+      <button class="brew-btn">Brew Potion</button>
+    </div>
+  `,e.querySelector(`.brew-btn`).addEventListener(`click`,()=>{o.brew()})}function y(e,t){e&&e.textContent!==t&&(e.textContent=t)}function b(e){e.querySelector(`.recipe-panel`)||v(e);let t=o.getState(),n=t.activeRecipe,r=t.cauldronIngredients.length,i=r>=_,a=r>0;y(e.querySelector(`.recipe-title`),n.name),y(e.querySelector(`[data-range="temperature"]`),`${n.temperature.min} – ${n.temperature.max}`),y(e.querySelector(`[data-range="density"]`),`${n.density.min} – ${n.density.max}`),y(e.querySelector(`[data-range="magicPower"]`),`${n.magicPower.min} – ${n.magicPower.max}`);let s=e.querySelector(`.recipe-counter`);y(s,`Ingredients: ${r} / ${_}`),s.classList.toggle(`max-reached`,i);let c=e.querySelector(`.brew-btn`);c.disabled!==!a&&(c.disabled=!a)}var x=`alchemists_cauldron_leaderboard`;function S(e){try{let t=new Date(e);return isNaN(t.getTime())?``:`${String(t.getDate()).padStart(2,`0`)}.${String(t.getMonth()+1).padStart(2,`0`)}.${t.getFullYear()} ${String(t.getHours()).padStart(2,`0`)}:${String(t.getMinutes()).padStart(2,`0`)}`}catch{return``}}function C(e){return[...e].sort((e,t)=>t.score===e.score?new Date(e.date).getTime()-new Date(t.date).getTime():t.score-e.score)}function w(){try{let e=localStorage.getItem(x);if(!e)return[];let t=JSON.parse(e);return Array.isArray(t)?C(t).slice(0,10):[]}catch(e){return console.error(`Failed to read leaderboard from localStorage:`,e),[]}}function T(e){try{let t=C(e).slice(0,10);return localStorage.setItem(x,JSON.stringify(t)),!0}catch(e){return console.error(`Failed to save leaderboard to localStorage:`,e),!1}}function E(){try{return localStorage.removeItem(x),!0}catch(e){return console.error(`Failed to clear leaderboard from localStorage:`,e),!1}}function D(e){let t=w();return t.length<10||e>t[t.length-1].score}function O(e){return e.trim().length<2?{isValid:!1,error:`Name must be at least 2 characters long`}:e.length>15?{isValid:!1,error:`Name cannot exceed 15 characters`}:/^[a-zA-Z0-9 _-]+$/.test(e)?{isValid:!0}:{isValid:!1,error:`Only letters, digits, spaces, _ and - are allowed`}}function k(e,t){let n=w(),r={id:`${Date.now()}_${Math.random().toString(36).substring(2,9)}`,name:e.trim(),score:t,date:new Date().toISOString()};n.push(r);let i=C(n).slice(0,10);return T(i),i}function A(e){let t=o.getState(),n=t.gameOverReason||`Game Over`,r=t.score,i=D(r),a=o.isScoreSubmitted(),s=``;s=i&&!a?`
+      <div class="top10-congrats">
+        <span class="badge-new-record">🎉 TOP-10 RECORD!</span>
+        <label for="player-name-input" class="name-label">Enter your name (2–15 chars):</label>
+        <div class="input-row">
+          <input 
+            type="text" 
+            id="player-name-input" 
+            class="player-name-input" 
+            placeholder="AlchemistName" 
+            maxlength="15" 
+            autocomplete="off" 
+          />
+        </div>
+        <div id="name-validation-error" class="name-validation-error" style="display: none;"></div>
+      </div>
+    `:a?`
+      <div class="score-submitted-notice">
+        <span>✨ Score saved to Leaderboard!</span>
+      </div>
+    `:`
+      <div class="not-top10-notice">
+        <span>Brew more potions next time to enter the Top-10!</span>
+      </div>
+    `,e.innerHTML=`
+    <div class="game-over-overlay">
+      <div class="game-over-modal">
+        <h2>Game Over</h2>
+        <p class="reason">${n}</p>
+        <div class="final-score">Final Score: <strong>${r}</strong></div>
+        
+        ${s}
+
+        <div class="game-over-actions">
+          ${i&&!a?`<button class="submit-score-btn" id="submit-score-btn">Submit Score</button>`:``}
+          <button class="play-again-btn" id="replay-btn">Replay</button>
+          <button class="game-over-leaderboard-btn" id="game-over-leaderboard-btn">Leaderboard</button>
+        </div>
+      </div>
+    </div>
+  `,e.querySelector(`#replay-btn`)?.addEventListener(`click`,()=>{o.startGame()}),e.querySelector(`#game-over-leaderboard-btn`)?.addEventListener(`click`,()=>{o.openLeaderboard(`game-over`)});let c=e.querySelector(`#submit-score-btn`),l=e.querySelector(`#player-name-input`),u=e.querySelector(`#name-validation-error`),d=()=>{if(!l)return;let e=l.value,t=O(e);t.isValid?(u&&(u.style.display=`none`),l.classList.remove(`input-error`),k(e,r),o.markScoreSubmitted(),o.openLeaderboard(`game-over`)):(u&&(u.textContent=t.error||`Invalid name`,u.style.display=`block`),l.classList.add(`input-error`),l.focus())};c?.addEventListener(`click`,d),l?.addEventListener(`keydown`,e=>{e.key===`Enter`&&d()}),l?.addEventListener(`input`,()=>{u&&u.style.display!==`none`&&(u.style.display=`none`,l.classList.remove(`input-error`))})}function j(e){e.innerHTML=`
+    <div class="menu-container">
+      <div class="menu-box">
+        <h1>Alchemist's Cauldron</h1>
+        <p>Mix ingredients, match target ranges, and brew potions before time or lives run out!</p>
+        <div class="menu-buttons">
+          <button class="start-game-btn" id="menu-start-btn">Start Game</button>
+          <button class="menu-leaderboard-btn" id="menu-leaderboard-btn">Leaderboard</button>
+          <button class="menu-help-btn" id="menu-help-btn">How to Play</button>
+        </div>
+      </div>
+
+      <!-- Help / Rules Modal -->
+      <div class="rules-modal-overlay" id="rules-modal" style="display: none;">
+        <div class="rules-modal-box">
+          <div class="rules-modal-header">
+            <h2>Alchemical Codex (Rules)</h2>
+            <button class="rules-close-icon" id="rules-close-icon">&times;</button>
+          </div>
+          <div class="rules-content">
+            <section class="rule-section">
+              <h3>🎯 The Goal</h3>
+              <p>Add ingredients to the cauldron to move all three parameters (<strong>Temperature</strong>, <strong>Density</strong>, <strong>Magic Power</strong>) into the target recipe ranges, then click <strong>Brew Potion</strong>.</p>
+            </section>
+
+            <section class="rule-section">
+              <h3>🌿 Ingredients & Shelf</h3>
+              <p>Click on any ingredient card on the shelf to drop it into the cauldron (up to <strong>4 ingredients max</strong>). Each ingredient has limited stock (<strong>2–15 portions</strong>). Once exhausted (0), that slot is blocked.</p>
+            </section>
+
+            <section class="rule-section">
+              <h3>🧪 Tolerance & Brewing</h3>
+              <p>Level 1 operates on <strong>Medium</strong> difficulty with a <strong>±8 tolerance</strong> for all 3 ranges. If your mixture falls within the expanded ranges, the potion succeeds (+200 score and +10s bonus!). If not, you lose 1 life.</p>
+            </section>
+
+            <section class="rule-section">
+              <h3>⏱️ Game Over Conditions</h3>
+              <ul>
+                <li><strong>Time's up:</strong> Timer hits 0s.</li>
+                <li><strong>Out of lives:</strong> All 3 lives are lost.</li>
+                <li><strong>Out of ingredients:</strong> All shelf stock is 0 and the cauldron is empty.</li>
+              </ul>
+            </section>
+          </div>
+          <div class="rules-footer">
+            <button class="rules-close-btn" id="rules-close-btn">Understood, Alchemist!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,e.querySelector(`#menu-start-btn`)?.addEventListener(`click`,()=>{o.startGame()}),e.querySelector(`#menu-leaderboard-btn`)?.addEventListener(`click`,()=>{o.openLeaderboard(`menu`)});let t=e.querySelector(`#menu-help-btn`),n=e.querySelector(`#rules-modal`),r=e.querySelector(`#rules-close-icon`),i=e.querySelector(`#rules-close-btn`),a=()=>{n&&(n.style.display=`flex`)},s=()=>{n&&(n.style.display=`none`)};t?.addEventListener(`click`,a),r?.addEventListener(`click`,s),i?.addEventListener(`click`,s)}function M(e){e.innerHTML=`
+    <div class="pause-overlay">
+      <div class="pause-modal">
+        <h2>Game Paused</h2>
+        <button class="resume-btn">Resume</button>
+        <button class="exit-btn">Exit to Menu</button>
+      </div>
+    </div>
+  `,e.querySelector(`.resume-btn`)?.addEventListener(`click`,()=>{o.resumeGame()}),e.querySelector(`.exit-btn`)?.addEventListener(`click`,()=>{o.exitToMenu()})}function N(e){return e.length===0?`
+      <tr>
+        <td colspan="4" class="empty-leaderboard">
+          No records yet. Brew potions and set the first record!
+        </td>
+      </tr>
+    `:e.map((e,t)=>{let n=t+1,r=`<span class="rank-number">${n}</span>`;return n===1?r=`<span class="rank-badge gold" title="1st Place">🥇 1</span>`:n===2?r=`<span class="rank-badge silver" title="2nd Place">🥈 2</span>`:n===3&&(r=`<span class="rank-badge bronze" title="3rd Place">🥉 3</span>`),`
+        <tr class="leaderboard-row rank-${n}">
+          <td class="col-rank">${r}</td>
+          <td class="col-name" title="${e.name}">${e.name}</td>
+          <td class="col-score"><strong>${e.score}</strong></td>
+          <td class="col-date">${S(e.date)}</td>
+        </tr>
+      `}).join(``)}function P(e){e.innerHTML=`
+    <div class="leaderboard-overlay">
+      <div class="leaderboard-modal">
+        <div class="leaderboard-header">
+          <h2>Top Alchemists Leaderboard</h2>
+          <p class="subtitle">Best potions masters of all time</p>
+        </div>
+
+        <div class="leaderboard-table-container">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th class="col-rank">Rank</th>
+                <th class="col-name">Name</th>
+                <th class="col-score">Score</th>
+                <th class="col-date">Date</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              ${N(w())}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="leaderboard-footer">
+          <button class="clear-btn" id="clear-leaderboard-btn">Clear Leaderboard</button>
+          <button class="back-btn" id="leaderboard-back-btn">Back</button>
+        </div>
+
+        <!-- Custom In-App Confirmation Modal -->
+        <div class="confirm-dialog-overlay" id="confirm-clear-dialog" style="display: none;">
+          <div class="confirm-dialog-box">
+            <h3>Clear Leaderboard?</h3>
+            <p>Are you sure you want to delete all leaderboard records? This cannot be undone.</p>
+            <div class="confirm-dialog-actions">
+              <button class="confirm-cancel-btn" id="confirm-cancel-btn">Cancel</button>
+              <button class="confirm-danger-btn" id="confirm-accept-btn">Clear All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,e.querySelector(`#leaderboard-back-btn`)?.addEventListener(`click`,()=>{o.closeLeaderboard()});let t=e.querySelector(`#clear-leaderboard-btn`),n=e.querySelector(`#confirm-clear-dialog`),r=e.querySelector(`#confirm-cancel-btn`),i=e.querySelector(`#confirm-accept-btn`),a=e.querySelector(`#leaderboard-body`);t&&n&&t.addEventListener(`click`,()=>{n.style.display=`flex`}),r&&n&&r.addEventListener(`click`,()=>{n.style.display=`none`}),i&&n&&a&&i.addEventListener(`click`,()=>{E(),n.style.display=`none`,a.innerHTML=N([])})}function F(e){let t=Math.floor(e/60),n=Math.floor(e%60);return`${t.toString().padStart(2,`0`)}:${n.toString().padStart(2,`0`)}`}var I=document.querySelector(`#app`);function L(e){e.innerHTML=`
+    <div class="game-container">
+      <header class="game-header">
+        <div class="header-top">
+          <h1>Alchemist's Cauldron</h1>
+          <button class="pause-btn" id="pause-trigger-btn" title="Pause">⏸</button>
+        </div>
+        <div class="game-stats">
+          <span>Score: <strong id="score-text">0</strong></span>
+          <span>Lives: <strong id="lives-text"></strong></span>
+          <div class="timer-wrapper">
+            <span>Time: <strong id="timer-text"></strong></span>
+            <div class="timer-bar-container">
+              <div class="timer-bar-fill" id="timer-bar"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main class="game-main">
+        <aside id="shelf-container"></aside>
+        <section id="cauldron-container"></section>
+        <aside id="recipe-container"></aside>
+        <aside id="bars-container"></aside>
+      </main>
+    </div>
+  `,document.getElementById(`pause-trigger-btn`)?.addEventListener(`click`,()=>{o.pauseGame()})}function R(){let e=()=>{let e=o.getState();if(e.status===`menu`){document.getElementById(`menu-root`)||(I.innerHTML=`<div id="menu-root"></div>`,j(document.getElementById(`menu-root`)));return}if(e.status===`leaderboard`){document.getElementById(`leaderboard-root`)||(I.innerHTML=`<div id="leaderboard-root"></div>`,P(document.getElementById(`leaderboard-root`)));return}if(e.status===`game-over`){document.getElementById(`game-over-container`)||(I.innerHTML=`<div id="game-over-container"></div>`),A(document.getElementById(`game-over-container`));return}let t=e.status===`paused`;I.querySelector(`.game-container`)||L(I);let n=I.querySelector(`.game-container`);n&&n.classList.toggle(`blurred`,t);let r=document.getElementById(`pause-modal-container`);if(t){r||(r=document.createElement(`div`),r.id=`pause-modal-container`,I.appendChild(r),M(r));return}r&&r.remove();let i=document.getElementById(`score-text`);i&&i.textContent!==String(e.score)&&(i.textContent=String(e.score));let a=document.getElementById(`lives-text`),s=`❤️`.repeat(Math.max(0,e.lives));a&&a.textContent!==s&&(a.textContent=s);let c=document.getElementById(`timer-text`),l=document.getElementById(`timer-bar`);if(c&&l){let t=F(e.timeLeft);c.textContent!==t&&(c.textContent=t),l.style.width=`${e.timeLeft/150*100}%`,e.timeLeft<=15?(c.classList.add(`pulse-red`),l.classList.add(`pulse-bar`)):(c.classList.remove(`pulse-red`),l.classList.remove(`pulse-bar`))}let u=document.getElementById(`shelf-container`),f=document.getElementById(`cauldron-container`),p=document.getElementById(`recipe-container`),h=document.getElementById(`bars-container`);u&&d(u),f&&m(f),p&&b(p),h&&g(h)};o.subscribe(e),e()}R();
