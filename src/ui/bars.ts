@@ -60,8 +60,8 @@ export function renderBars(container: HTMLElement): void {
   };
 
   const tempScale = { min: -50, max: 100 };
-  const densityScale = { min: -30, max: 50 };
-  const magicScale = { min: 0, max: 50 };
+  const densityScale = { min: -30, max: 60 };
+  const magicScale = { min: 0, max: 80 };
 
   const tempZone = getZonePercent(
     recipe.temperature.min,

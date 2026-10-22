@@ -4,24 +4,33 @@ import { gameStore } from '../state/game-state';
 
 const MAX_CAULDRON = 4;
 
-/** Buduje strukturę panelu tylko raz. */
+/** Buduje strukturę panelu tylko raz dla aktywnych składników na półce. */
 function buildShelf(container: HTMLElement): void {
-  const cardsHtml = INGREDIENTS.map((ing) => {
-    const imgUrl = INGREDIENT_IMAGES[ing.id] || '';
+  const state = gameStore.getState();
+  // Dla Level 1 (Medium) bierzemy składniki obecne w shelfStock (6 składników)
+  const activeIngredients = INGREDIENTS.filter((ing) => state.shelfStock[ing.id] !== undefined);
 
-    return `
-      <button class="ingredient-card" data-id="${ing.id}">
-        <span class="icon">
-          ${imgUrl ? `<img src="${imgUrl}" alt="${ing.name}" width="36" height="36" />` : ''}
-        </span>
-        <div class="info">
-          <span class="name">${ing.name}</span>
-          <span class="stats">T${ing.temperature} D${ing.density} M${ing.magicPower}</span>
-        </div>
-        <span class="badge"></span>
-      </button>
-    `;
-  }).join('');
+  const cardsHtml = activeIngredients
+    .map((ing) => {
+      const imgUrl = INGREDIENT_IMAGES[ing.id] || '';
+      const t = ing.temperature > 0 ? `+${ing.temperature}` : `${ing.temperature}`;
+      const d = ing.density > 0 ? `+${ing.density}` : `${ing.density}`;
+      const m = ing.magicPower > 0 ? `+${ing.magicPower}` : `${ing.magicPower}`;
+
+      return `
+        <button class="ingredient-card" data-id="${ing.id}">
+          <span class="icon">
+            ${imgUrl ? `<img src="${imgUrl}" alt="${ing.name}" width="36" height="36" />` : ''}
+          </span>
+          <div class="info">
+            <span class="name">${ing.name}</span>
+            <span class="stats">T${t} D${d} M${m}</span>
+          </div>
+          <span class="badge"></span>
+        </button>
+      `;
+    })
+    .join('');
 
   container.innerHTML = `
     <div class="shelf-panel">

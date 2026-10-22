@@ -1,13 +1,18 @@
 import { IIngredient } from './types';
 
+/**
+ * Official Ingredient Catalogue from RS School Alchemist's Cauldron specification:
+ * Level 1 uses the first 6 ingredients.
+ * In Level 2: Easy uses the first 4, Medium the first 6, Hard all 8.
+ */
 export const INGREDIENTS: IIngredient[] = [
   {
     id: 'dragon-tears',
     name: 'Dragon Tears',
     icon: 'dragon-tears',
-    temperature: -18,
-    density: 4,
-    magicPower: 14,
+    temperature: 25,
+    density: 8,
+    magicPower: 10,
   },
   {
     id: 'fairy-dust',
@@ -18,27 +23,51 @@ export const INGREDIENTS: IIngredient[] = [
     magicPower: 12,
   },
   {
-    id: 'mandragora-root',
-    name: 'Mandragora Root',
-    icon: 'mandragora-root',
+    id: 'frost-lotus',
+    name: 'Frost Lotus',
+    icon: 'frost-lotus',
+    temperature: -18,
+    density: 4,
+    magicPower: 14,
+  },
+  {
+    id: 'mandrake-root',
+    name: 'Mandrake Root',
+    icon: 'mandrake-root',
     temperature: -5,
     density: 20,
     magicPower: 8,
   },
   {
-    id: 'nightcap-mushroom',
-    name: 'Nightcap Mushroom',
-    icon: 'nightcap-mushroom',
-    temperature: -10,
-    density: 15,
-    magicPower: 18,
+    id: 'caustic-acid',
+    name: 'Caustic Acid',
+    icon: 'caustic-acid',
+    temperature: 10,
+    density: 14,
+    magicPower: 22,
   },
   {
-    id: 'sulfur-crystal',
-    name: 'Sulfur Crystal',
-    icon: 'sulfur-crystal',
-    temperature: 35,
-    density: 25,
-    magicPower: 5,
+    id: 'essence-of-the-void',
+    name: 'Essence of the Void',
+    icon: 'essence-of-the-void',
+    temperature: -20,
+    density: -10,
+    magicPower: 40,
+  },
+  {
+    id: 'phoenix-feather',
+    name: 'Phoenix Feather',
+    icon: 'phoenix-feather',
+    temperature: 50,
+    density: -10,
+    magicPower: 30,
+  },
+  {
+    id: 'toad-slime',
+    name: 'Toad Slime',
+    icon: 'toad-slime',
+    temperature: 5,
+    density: 30,
+    magicPower: 0,
   },
 ];
