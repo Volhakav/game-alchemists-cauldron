@@ -11,8 +11,8 @@ function pickRandomRecipe(difficulty: 'easy' | 'medium' | 'hard'): IRecipe {
 }
 
 class GameStore {
-  private state: IGameState & { gameOverReason?: string } = {
-    status: 'playing',
+  private state: IGameState = {
+    status: 'menu',
     score: 0,
     timeLeft: 150,
     lives: 3,
@@ -28,7 +28,11 @@ class GameStore {
   private endTime: number = Date.now() + 150 * 1000;
 
   constructor() {
-    this.startTimer();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && this.state.status === 'playing') {
+        this.pauseGame();
+      }
+    });
   }
 
   public getState() {
@@ -62,7 +66,6 @@ class GameStore {
       }
 
       if (this.state.lives <= 0) {
-        this.state.gameOverReason = 'Out of lives!';
         this.endGame('Out of lives!');
         return;
       }
@@ -83,14 +86,11 @@ class GameStore {
     return totalStock === 0 && this.state.cauldronIngredients.length === 0;
   }
 
-  public endGame(reason: string) {
-    this.state.status = 'game-over';
-    this.state.gameOverReason = reason;
-    if (this.timerInterval) clearInterval(this.timerInterval);
-    this.notify();
-  }
+  private leaderboardFrom: 'menu' | 'game-over' = 'menu';
+  private scoreSubmitted: boolean = false;
 
-  public resetGame() {
+  public startGame() {
+    this.scoreSubmitted = false;
     this.state = {
       status: 'playing',
       score: 0,
@@ -103,6 +103,60 @@ class GameStore {
       gameOverReason: undefined,
     };
     this.startTimer();
+    this.notify();
+  }
+
+  public resetGame() {
+    this.startGame();
+  }
+
+  public openLeaderboard(from: 'menu' | 'game-over' = 'menu') {
+    this.leaderboardFrom = from;
+    this.state.status = 'leaderboard';
+    this.notify();
+  }
+
+  public closeLeaderboard() {
+    this.state.status = this.leaderboardFrom;
+    this.notify();
+  }
+
+  public isScoreSubmitted(): boolean {
+    return this.scoreSubmitted;
+  }
+
+  public markScoreSubmitted(): void {
+    this.scoreSubmitted = true;
+    this.notify();
+  }
+
+  public pauseGame() {
+    if (this.state.status === 'playing') {
+      this.state.status = 'paused';
+      if (this.timerInterval) clearInterval(this.timerInterval);
+      this.notify();
+    }
+  }
+
+  public resumeGame() {
+    if (this.state.status === 'paused') {
+      this.state.status = 'playing';
+      this.endTime = Date.now() + this.state.timeLeft * 1000;
+      this.startTimer();
+      this.notify();
+    }
+  }
+
+  public exitToMenu() {
+    this.state.status = 'menu';
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    this.notify();
+  }
+
+  public endGame(reason: string) {
+    this.state.status = 'game-over';
+    this.state.gameOverReason = reason;
+    if (this.timerInterval) clearInterval(this.timerInterval);
     this.notify();
   }
 

@@ -1,5 +1,5 @@
 export type Difficulty = 'easy' | 'medium' | 'hard';
-export type GameStatus = 'menu' | 'playing' | 'paused' | 'game-over';
+export type GameStatus = 'menu' | 'playing' | 'paused' | 'game-over' | 'leaderboard';
 
 export interface IIngredient {
   id: string;
@@ -34,4 +34,5 @@ export interface IGameState {
   shelfStock: Record<string, number>;
   difficulty?: Difficulty;
   lastReactionId?: string | null;
+  gameOverReason?: string;
 }
