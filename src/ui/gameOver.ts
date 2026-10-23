@@ -2,10 +2,12 @@ import { gameStore } from '../state/game-state';
 import { isTop10Score, validatePlayerName, addLeaderboardEntry } from '../storage/leaderboard';
 
 export function renderGameOver(container: HTMLElement): void {
-  const state = gameStore.getState();
+  const state = gameStore.getState() as any;
   const reason = state.gameOverReason || 'Game Over';
   const score = state.score;
-  const isEligibleForTop10 = isTop10Score(score);
+  const difficulty = state.difficulty || 'medium'; 
+  
+  const isEligibleForTop10 = isTop10Score(difficulty, score); 
   const alreadySubmitted = gameStore.isScoreSubmitted();
 
   let inputSectionHtml = '';
@@ -59,17 +61,14 @@ export function renderGameOver(container: HTMLElement): void {
     </div>
   `;
 
-  // Replay
   container.querySelector('#replay-btn')?.addEventListener('click', () => {
-    gameStore.startGame();
+    gameStore.resetGame();
   });
 
-  // Open Leaderboard
   container.querySelector('#game-over-leaderboard-btn')?.addEventListener('click', () => {
     gameStore.openLeaderboard('game-over');
   });
 
-  // Submit Score Handling
   const submitBtn = container.querySelector('#submit-score-btn');
   const nameInput = container.querySelector<HTMLInputElement>('#player-name-input');
   const errorEl = container.querySelector<HTMLElement>('#name-validation-error');
@@ -94,11 +93,9 @@ export function renderGameOver(container: HTMLElement): void {
     }
     nameInput.classList.remove('input-error');
 
-    // Add to leaderboard
-    addLeaderboardEntry(name, score);
+    addLeaderboardEntry(difficulty, name, score);
     gameStore.markScoreSubmitted();
 
-    // Directly open leaderboard to show their entry
     gameStore.openLeaderboard('game-over');
   };
 

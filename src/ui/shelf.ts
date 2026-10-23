@@ -1,14 +1,12 @@
 import { INGREDIENTS } from '../data/ingredients';
 import { INGREDIENT_IMAGES } from '../data/icons';
 import { gameStore } from '../state/game-state';
+import { DIFFICULTY_SETTINGS } from '../data/difficulty';
 
-const MAX_CAULDRON = 4;
-
-/** Buduje strukturę panelu tylko raz dla aktywnych składników na półce. */
 function buildShelf(container: HTMLElement): void {
   const state = gameStore.getState();
-  // Dla Level 1 (Medium) bierzemy składniki obecne w shelfStock (6 składników)
-  const activeIngredients = INGREDIENTS.filter((ing) => state.shelfStock[ing.id] !== undefined);
+  const settings = DIFFICULTY_SETTINGS[state.difficulty || 'medium'];
+  const activeIngredients = INGREDIENTS.slice(0, settings.shelfIngredientsCount);
 
   const cardsHtml = activeIngredients
     .map((ing) => {
@@ -41,8 +39,6 @@ function buildShelf(container: HTMLElement): void {
     </div>
   `;
 
-  // Jeden listener (event delegation) - przeżyje wszystkie aktualizacje,
-  // bo elementy .ingredient-card nie są już niszczone.
   container.querySelector('.shelf-cards')!.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.ingredient-card');
     if (!btn || btn.disabled) return;
@@ -55,15 +51,16 @@ function buildShelf(container: HTMLElement): void {
 }
 
 export function renderShelf(container: HTMLElement): void {
-  // Struktura powstaje tylko wtedy, gdy jeszcze jej nie ma.
-  if (!container.querySelector('.shelf-panel')) {
+  const state = gameStore.getState();
+  const settings = DIFFICULTY_SETTINGS[state.difficulty || 'medium'];
+  
+  const existingCards = container.querySelectorAll<HTMLButtonElement>('.ingredient-card');
+  if (!container.querySelector('.shelf-panel') || existingCards.length !== settings.shelfIngredientsCount) {
     buildShelf(container);
   }
 
-  const state = gameStore.getState();
-  const isCauldronFull = state.cauldronIngredients.length >= MAX_CAULDRON;
+  const isCauldronFull = state.cauldronIngredients.length >= settings.maxCauldronIngredients;
 
-  // Aktualizujemy tylko to, co zależy od stanu.
   container.querySelectorAll<HTMLButtonElement>('.ingredient-card').forEach((btn) => {
     const id = btn.dataset.id!;
     const stock = state.shelfStock[id] ?? 0;
@@ -78,7 +75,6 @@ export function renderShelf(container: HTMLElement): void {
     const stockText = String(stock);
     if (badge.textContent !== stockText) badge.textContent = stockText;
 
-    // visibility zamiast usuwania <img>, żeby obrazek nie ładował się od nowa.
     const img = btn.querySelector<HTMLImageElement>('img');
     if (img) {
       img.style.visibility = isEmpty ? 'hidden' : 'visible';
