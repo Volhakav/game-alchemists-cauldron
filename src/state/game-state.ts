@@ -4,6 +4,7 @@ import { getRecipesByDifficulty } from '../data/recipes';
 import { generateInitialStock } from '../logic/stock';
 import { calculateCauldron } from '../logic/calculate-cauldron';
 import { DIFFICULTY_SETTINGS } from '../data/difficulty';
+import { saveGame, loadGame, clearSave } from '../storage/save';
 
 function pickRandomRecipe(difficulty: Difficulty): IRecipe {
   const available = getRecipesByDifficulty(difficulty);
@@ -27,6 +28,8 @@ class GameStore {
   private listeners: Array<(state: IGameState) => void> = [];
   private timerInterval: number | null = null;
   private endTime: number = Date.now() + 150 * 1000;
+  private leaderboardFrom: 'menu' | 'game-over' = 'menu';
+  private scoreSubmitted: boolean = false;
 
   constructor() {
     document.addEventListener('visibilitychange', () => {
@@ -45,6 +48,7 @@ class GameStore {
   }
 
   private notify(): void {
+    saveGame(this.state);
     this.listeners.forEach((listener) => listener(this.state));
   }
 
@@ -87,13 +91,10 @@ class GameStore {
     return totalStock === 0 && this.state.cauldronIngredients.length === 0;
   }
 
-  private leaderboardFrom: 'menu' | 'game-over' = 'menu';
-  private scoreSubmitted: boolean = false;
-
   public startGame(difficulty: Difficulty = 'medium') {
+    clearSave();
     this.scoreSubmitted = false;
     const settings = DIFFICULTY_SETTINGS[difficulty];
-    
     const activeIngredients = INGREDIENTS.slice(0, settings.shelfIngredientsCount);
 
     this.state = {
@@ -109,6 +110,20 @@ class GameStore {
     };
     this.startTimer();
     this.notify();
+  }
+
+  public continueGame(): boolean {
+    const savedState = loadGame();
+    if (!savedState) return false;
+
+    this.scoreSubmitted = false;
+    this.state = {
+      ...savedState,
+      status: 'paused', // Zgodnie z wymaganiem wznawia w stanie pauzy
+    };
+
+    this.notify();
+    return true;
   }
 
   public resetGame() {
@@ -153,12 +168,14 @@ class GameStore {
   }
 
   public exitToMenu() {
+    clearSave();
     this.state.status = 'menu';
     if (this.timerInterval) clearInterval(this.timerInterval);
     this.notify();
   }
 
   public endGame(reason: string) {
+    clearSave();
     this.state.status = 'game-over';
     this.state.gameOverReason = reason;
     if (this.timerInterval) clearInterval(this.timerInterval);

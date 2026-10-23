@@ -1,7 +1,10 @@
 import { gameStore } from '../state/game-state';
 import { Difficulty } from '../data/types';
+import { loadGame } from '../storage/save';
 
 export function renderMenu(container: HTMLElement): void {
+  const hasSavedGame = loadGame() !== null;
+
   container.innerHTML = `
     <div class="menu-container">
       <div class="menu-box">
@@ -9,6 +12,12 @@ export function renderMenu(container: HTMLElement): void {
         <p>Mix ingredients, match target ranges, and brew legendary potions!</p>
         
         <div class="menu-actions">
+          ${
+            hasSavedGame
+              ? `<button class="start-game-btn continue-btn" id="continue-game-btn">Continue Game</button>`
+              : ''
+          }
+
           <div class="difficulty-select-group">
             <h3>Select Difficulty:</h3>
             <div class="diff-buttons">
@@ -18,7 +27,7 @@ export function renderMenu(container: HTMLElement): void {
             </div>
           </div>
 
-          <button class="start-game-btn" id="start-game-btn">Start Game</button>
+          <button class="start-game-btn" id="start-game-btn">Start New Game</button>
           <button class="menu-btn leaderboard-menu-btn" id="menu-leaderboard-btn">Leaderboard</button>
           <button class="menu-btn help-btn" id="menu-help-btn">Help & Rules</button>
         </div>
@@ -29,14 +38,8 @@ export function renderMenu(container: HTMLElement): void {
         <div class="help-modal-box">
           <h2>Game Rules</h2>
           <div class="help-content">
-            <p><strong>Goal:</strong> Add ingredients from the shelf to the cauldron to match the target ranges of Temperature, Density, and Magic Power for the active recipe.</p>
-            <p><strong>Brewing:</strong> Click <strong>Brew</strong> to check your mixture. Success awards points and time; failure costs a life.</p>
-            <p><strong>Difficulties:</strong></p>
-            <ul>
-              <li><strong>Easy:</strong> 4 shelf ingredients, 4 max cauldron capacity, 180s, ±12 tolerance, 5 lives.</li>
-              <li><strong>Medium:</strong> 6 shelf ingredients, 4 max cauldron capacity, 150s, ±8 tolerance, 3 lives.</li>
-              <li><strong>Hard:</strong> 8 shelf ingredients, 5 max cauldron capacity, 150s, ±5 tolerance, 3 lives.</li>
-            </ul>
+            <p><strong>Goal:</strong> Add ingredients from the shelf to the cauldron to match target ranges.</p>
+            <p><strong>Brewing:</strong> Click <strong>Brew</strong> to check your mixture.</p>
           </div>
           <button class="back-btn" id="help-close-btn">Close</button>
         </div>
@@ -52,6 +55,10 @@ export function renderMenu(container: HTMLElement): void {
       btn.classList.add('active');
       selectedDifficulty = btn.getAttribute('data-diff') as Difficulty;
     });
+  });
+
+  container.querySelector('#continue-game-btn')?.addEventListener('click', () => {
+    gameStore.continueGame();
   });
 
   container.querySelector('#start-game-btn')?.addEventListener('click', () => {
