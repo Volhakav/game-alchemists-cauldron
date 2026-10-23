@@ -1,16 +1,17 @@
+import { Difficulty } from '../data/types';
+
 export interface ILeaderboardEntry {
   id: string;
   name: string;
   score: number;
-  date: string; // ISO 8601 string
+  date: string;
+  difficulty: Difficulty;
 }
 
-export const LEADERBOARD_STORAGE_KEY = 'alchemists_cauldron_leaderboard';
+export function getLeaderboardKey(difficulty: Difficulty): string {
+  return `alchemists_cauldron_leaderboard_${difficulty}`;
+}
 
-/**
- * Formats a date into DD.MM.YYYY HH:MM
- * Example: 02.10.2026 12:00
- */
 export function formatLeaderboardDate(dateInput: string | Date | number): string {
   try {
     const d = new Date(dateInput);
@@ -26,11 +27,6 @@ export function formatLeaderboardDate(dateInput: string | Date | number): string
   }
 }
 
-/**
- * Sorts leaderboard entries:
- * 1. Score from high to low.
- * 2. If equal score, earlier date stays higher (stable tie-breaker).
- */
 export function sortLeaderboardEntries(entries: ILeaderboardEntry[]): ILeaderboardEntry[] {
   return [...entries].sort((a, b) => {
     if (b.score !== a.score) {
@@ -42,12 +38,9 @@ export function sortLeaderboardEntries(entries: ILeaderboardEntry[]): ILeaderboa
   });
 }
 
-/**
- * Reads leaderboard from localStorage safely without throwing errors.
- */
-export function getLeaderboard(): ILeaderboardEntry[] {
+export function getLeaderboard(difficulty: Difficulty = 'medium'): ILeaderboardEntry[] {
   try {
-    const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
+    const raw = localStorage.getItem(getLeaderboardKey(difficulty));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
@@ -58,13 +51,10 @@ export function getLeaderboard(): ILeaderboardEntry[] {
   }
 }
 
-/**
- * Saves entries to localStorage safely without throwing errors.
- */
-export function saveLeaderboard(entries: ILeaderboardEntry[]): boolean {
+export function saveLeaderboard(difficulty: Difficulty, entries: ILeaderboardEntry[]): boolean {
   try {
     const sorted = sortLeaderboardEntries(entries).slice(0, 10);
-    localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(sorted));
+    localStorage.setItem(getLeaderboardKey(difficulty), JSON.stringify(sorted));
     return true;
   } catch (err) {
     console.error('Failed to save leaderboard to localStorage:', err);
@@ -72,12 +62,9 @@ export function saveLeaderboard(entries: ILeaderboardEntry[]): boolean {
   }
 }
 
-/**
- * Clears the leaderboard in localStorage safely.
- */
-export function clearLeaderboard(): boolean {
+export function clearLeaderboard(difficulty: Difficulty): boolean {
   try {
-    localStorage.removeItem(LEADERBOARD_STORAGE_KEY);
+    localStorage.removeItem(getLeaderboardKey(difficulty));
     return true;
   } catch (err) {
     console.error('Failed to clear leaderboard from localStorage:', err);
@@ -85,14 +72,8 @@ export function clearLeaderboard(): boolean {
   }
 }
 
-/**
- * Checks if a given score qualifies for the Top-10.
- * - If fewer than 10 entries exist, any score qualifies.
- * - If 10 entries exist, score must be strictly higher than the 10th score
- *   (since earlier scores stay higher on tie).
- */
-export function isTop10Score(score: number): boolean {
-  const entries = getLeaderboard();
+export function isTop10Score(difficulty: Difficulty, score: number): boolean {
+  const entries = getLeaderboard(difficulty);
   if (entries.length < 10) {
     return true;
   }
@@ -100,11 +81,6 @@ export function isTop10Score(score: number): boolean {
   return score > lowestScore;
 }
 
-/**
- * Validates player name according to US 1.6 rules:
- * - 2 to 15 characters
- * - allowed characters: letters, digits, space, _ and -
- */
 export function validatePlayerName(name: string): { isValid: boolean; error?: string } {
   const trimmed = name.trim();
   if (trimmed.length < 2) {
@@ -120,19 +96,17 @@ export function validatePlayerName(name: string): { isValid: boolean; error?: st
   return { isValid: true };
 }
 
-/**
- * Adds an entry to the leaderboard and returns the updated Top-10.
- */
-export function addLeaderboardEntry(name: string, score: number): ILeaderboardEntry[] {
-  const entries = getLeaderboard();
+export function addLeaderboardEntry(difficulty: Difficulty, name: string, score: number): ILeaderboardEntry[] {
+  const entries = getLeaderboard(difficulty);
   const newEntry: ILeaderboardEntry = {
     id: `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
     name: name.trim(),
     score,
     date: new Date().toISOString(),
+    difficulty,
   };
   entries.push(newEntry);
   const updated = sortLeaderboardEntries(entries).slice(0, 10);
-  saveLeaderboard(updated);
+  saveLeaderboard(difficulty, updated);
   return updated;
 }
