@@ -3,6 +3,7 @@ import { INGREDIENT_IMAGES } from '../data/icons';
 import { gameStore } from '../state/game-state';
 import { DIFFICULTY_SETTINGS } from '../data/difficulty';
 
+/** Buduje strukturę panelu półki oraz obsługuje zdarzenia dragstart i kliknięcia. */
 function buildShelf(container: HTMLElement): void {
   const state = gameStore.getState();
   const settings = DIFFICULTY_SETTINGS[state.difficulty || 'medium'];
@@ -16,7 +17,7 @@ function buildShelf(container: HTMLElement): void {
       const m = ing.magicPower > 0 ? `+${ing.magicPower}` : `${ing.magicPower}`;
 
       return `
-        <button class="ingredient-card" data-id="${ing.id}">
+        <button class="ingredient-card" data-id="${ing.id}" draggable="true">
           <span class="icon">
             ${imgUrl ? `<img src="${imgUrl}" alt="${ing.name}" width="36" height="36" />` : ''}
           </span>
@@ -39,15 +40,41 @@ function buildShelf(container: HTMLElement): void {
     </div>
   `;
 
-  container.querySelector('.shelf-cards')!.addEventListener('click', (e) => {
-    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.ingredient-card');
-    if (!btn || btn.disabled) return;
+  const shelfCardsContainer = container.querySelector('.shelf-cards');
+  if (shelfCardsContainer) {
+    // Obsługa przeciągania (Drag & Drop)
+    shelfCardsContainer.addEventListener('dragstart', (e: Event) => {
+      const dragEvent = e as DragEvent;
+      const currentState = gameStore.getState();
+      if (currentState.status !== 'playing') {
+        dragEvent.preventDefault();
+        return;
+      }
 
-    const id = btn.dataset.id;
-    if (id) {
-      gameStore.addIngredientToCauldron(id);
-    }
-  });
+      const btn = (dragEvent.target as HTMLElement).closest<HTMLButtonElement>('.ingredient-card');
+      if (!btn || btn.disabled) {
+        dragEvent.preventDefault();
+        return;
+      }
+
+      const id = btn.dataset.id;
+      if (id && dragEvent.dataTransfer) {
+        dragEvent.dataTransfer.setData('text/plain', id);
+        dragEvent.dataTransfer.effectAllowed = 'copy';
+      }
+    });
+
+    // Obsługa kliknięć (Click to add)
+    shelfCardsContainer.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.ingredient-card');
+      if (!btn || btn.disabled) return;
+
+      const id = btn.dataset.id;
+      if (id) {
+        gameStore.addIngredientToCauldron(id);
+      }
+    });
+  }
 }
 
 export function renderShelf(container: HTMLElement): void {
