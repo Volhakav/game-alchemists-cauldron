@@ -5,12 +5,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 40px auto 20px auto; // Przesunięto kocioł niżej
+  margin: 40px auto 20px auto; 
   max-width: 420px;
   width: 100%;
   transition: all 0.3s ease;
 
-  // Metalowe uszka (uchwyty) kotła po bokach
+
   &::before,
   &::after {
     content: '';
@@ -32,7 +32,6 @@
     transform: rotate(25deg);
   }
 
-  // Efekt podświetlenia podczas przeciągania (Drag & Drop)
   &.drag-over {
     .cauldron-body {
       border-color: $accent-color !important;
@@ -46,8 +45,6 @@
   position: relative;
   background: radial-gradient(circle at 50% 30%, #323242 0%, #15151a 70%, #0a0a0d 100%);
   border: 4px solid #4a4a5e;
-  
-  // Pękaty kształt kotła
   border-radius: 42% 42% 48% 48% / 28% 28% 72% 72%;
   padding: 30px 22px 24px 22px;
   width: 100%;
@@ -56,9 +53,7 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  overflow: hidden; // Zabezpiecza przed wychodzeniem elementów poza krawędzie kotła
-
-  // Kołnierz (rant) na górze kotła
+  overflow: hidden; 
   &::before {
     content: '';
     position: absolute;
@@ -72,7 +67,6 @@
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
   }
 
-  // Nóżki na dole
   &::after {
     content: '';
     position: absolute;
@@ -121,7 +115,7 @@
   align-items: center;
   background: rgba(0, 0, 0, 0.35);
   padding: 10px 12px;
-  border-radius: 20px; // Dopasowane zaokrąglenie, które nie wystaje poza kocioł
+  border-radius: 20px; 
   width: 100%;
   box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.04);
