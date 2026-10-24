@@ -1,10 +1,12 @@
 import { gameStore } from '../state/game-state';
 import { INGREDIENT_IMAGES } from '../data/icons';
 import { DIFFICULTY_SETTINGS } from '../data/difficulty';
+import { Difficulty } from '../data/types';
 
 export function renderCauldron(container: HTMLElement): void {
-  const state = gameStore.getState();
-  const settings = DIFFICULTY_SETTINGS[state.difficulty || 'medium'];
+  const state = gameStore.getState() as any;
+  const currentDifficulty = (state.difficulty as Difficulty) || 'medium';
+  const settings = DIFFICULTY_SETTINGS[currentDifficulty];
   const maxCauldron = settings.maxCauldronIngredients;
   const cauldronIngredients = state.cauldronIngredients;
 
@@ -37,14 +39,14 @@ export function renderCauldron(container: HTMLElement): void {
     </div>
   `;
 
-  // Obsługa strefy upuszczania (Drag & Drop)
   const dropZone = container.querySelector('#cauldron-drop-zone');
   if (dropZone) {
     dropZone.addEventListener('dragover', (e: Event) => {
       const dragEvent = e as DragEvent;
       dragEvent.preventDefault();
-      const currentState = gameStore.getState();
-      const currentSettings = DIFFICULTY_SETTINGS[currentState.difficulty || 'medium'];
+      const currentState = gameStore.getState() as any;
+      const diff = (currentState.difficulty as Difficulty) || 'medium';
+      const currentSettings = DIFFICULTY_SETTINGS[diff];
       
       if (currentState.status !== 'playing' || currentState.cauldronIngredients.length >= currentSettings.maxCauldronIngredients) {
         if (dragEvent.dataTransfer) dragEvent.dataTransfer.dropEffect = 'none';
