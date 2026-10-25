@@ -10,7 +10,7 @@ export function renderCauldron(container: HTMLElement): void {
   const maxCauldron = settings.maxCauldronIngredients;
   const cauldronIngredients = state.cauldronIngredients;
   const isEmpty = cauldronIngredients.length === 0;
-
+  const brewResult = state.lastBrewResult; 
   const slotsHtml = Array.from({ length: maxCauldron })
     .map((_, index) => {
       const ingredient = cauldronIngredients[index];
@@ -18,7 +18,7 @@ export function renderCauldron(container: HTMLElement): void {
         const imgUrl = INGREDIENT_IMAGES[ingredient.id] || '';
         return `
           <div class="cauldron-slot filled" title="${ingredient.name}">
-            ${imgUrl ? `<img src="${imgUrl}" alt="${ingredient.name}" width="38" height="38" />` : ''}
+            ${imgUrl ? `<img src="${imgUrl}" alt="${ingredient.name}" width="38" height="38" class="floating-icon" />` : ''}
           </div>
         `;
       }
@@ -26,8 +26,12 @@ export function renderCauldron(container: HTMLElement): void {
     })
     .join('');
 
+  let animationClass = '';
+  if (brewResult === 'success') animationClass = 'brew-success-anim';
+  if (brewResult === 'failure') animationClass = 'brew-failure-anim';
+
   container.innerHTML = `
-    <div class="cauldron-container" id="cauldron-drop-zone">
+    <div class="cauldron-container ${animationClass}" id="cauldron-drop-zone">
       <div class="cauldron-body">
         <div class="cauldron-header">
           <h3>Cauldron</h3>
@@ -45,7 +49,13 @@ export function renderCauldron(container: HTMLElement): void {
     </div>
   `;
 
-  // Obsługa przycisku Pour Out
+  const cauldronContainer = container.querySelector('#cauldron-drop-zone');
+  if (cauldronContainer && brewResult) {
+    cauldronContainer.addEventListener('animationend', () => {
+      delete state.lastBrewResult;
+    }, { once: true });
+  }
+
   const pourOutBtn = container.querySelector('#pour-out-btn');
   if (pourOutBtn) {
     pourOutBtn.addEventListener('click', () => {
@@ -53,7 +63,6 @@ export function renderCauldron(container: HTMLElement): void {
     });
   }
 
-  // Obsługa strefy upuszczania (Drag & Drop)
   const dropZone = container.querySelector('#cauldron-drop-zone');
   if (dropZone) {
     dropZone.addEventListener('dragover', (e: Event) => {

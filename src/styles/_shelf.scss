@@ -117,7 +117,7 @@
   .ingredient-tooltip {
     position: absolute;
     top: 50%;
-    left: calc(100% + 10px);
+    right: calc(100% + 10px);
     transform: translateY(-50%);
     background: rgba(18, 18, 24, 0.96);
     border: 2px solid $accent-color;
@@ -139,8 +139,8 @@
     }
 
     &.tooltip--left {
-      left: auto;
-      right: calc(100% + 10px);
+      right: auto;
+      left: calc(100% + 10px);
     }
 
     &.tooltip--up {
