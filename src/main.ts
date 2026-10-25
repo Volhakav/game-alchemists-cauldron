@@ -9,6 +9,10 @@ import { renderMenu } from './ui/menu';
 import { renderPauseModal } from './ui/pauseModal';
 import { renderLeaderboard } from './ui/leaderboard';
 import { formatTime } from './logic/time';
+import { initKeyboardHandler } from './logic/keyboard';
+
+// Inicjalizacja globalnej obsługi skrótów klawiszowych (US 3.6)
+initKeyboardHandler();
 
 const app = document.querySelector('#app') as HTMLElement;
 
