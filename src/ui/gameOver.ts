@@ -5,9 +5,9 @@ export function renderGameOver(container: HTMLElement): void {
   const state = gameStore.getState() as any;
   const reason = state.gameOverReason || 'Game Over';
   const score = state.score;
-  const difficulty = state.difficulty || 'medium'; 
-  
-  const isEligibleForTop10 = isTop10Score(difficulty, score); 
+  const difficulty = state.difficulty || 'medium';
+
+  const isEligibleForTop10 = isTop10Score(difficulty, score);
   const alreadySubmitted = gameStore.isScoreSubmitted();
 
   let inputSectionHtml = '';

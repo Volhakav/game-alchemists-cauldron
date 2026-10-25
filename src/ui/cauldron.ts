@@ -1,55 +1,109 @@
 import { gameStore } from '../state/game-state';
 import { INGREDIENT_IMAGES } from '../data/icons';
+import { DIFFICULTY_SETTINGS } from '../data/difficulty';
+import { Difficulty } from '../data/types';
 
-const MAX_INGREDIENTS = 4;
+export function renderCauldron(container: HTMLElement): void {
+  const state = gameStore.getState() as any;
+  const currentDifficulty = (state.difficulty as Difficulty) || 'medium';
+  const settings = DIFFICULTY_SETTINGS[currentDifficulty];
+  const maxCauldron = settings.maxCauldronIngredients;
+  const cauldronIngredients = state.cauldronIngredients;
+  const isEmpty = cauldronIngredients.length === 0;
+  const brewResult = state.lastBrewResult;
+  const slotsHtml = Array.from({ length: maxCauldron })
+    .map((_, index) => {
+      const ingredient = cauldronIngredients[index];
+      if (ingredient) {
+        const imgUrl = INGREDIENT_IMAGES[ingredient.id] || '';
+        return `
+          <div class="cauldron-slot filled" title="${ingredient.name}">
+            ${imgUrl ? `<img src="${imgUrl}" alt="${ingredient.name}" width="38" height="38" class="floating-icon" />` : ''}
+          </div>
+        `;
+      }
+      return `<div class="cauldron-slot empty"></div>`;
+    })
+    .join('');
 
-function buildCauldron(container: HTMLElement): void {
+  let animationClass = '';
+  if (brewResult === 'success') animationClass = 'brew-success-anim';
+  if (brewResult === 'failure') animationClass = 'brew-failure-anim';
+
   container.innerHTML = `
-    <div class="cauldron-panel">
-      <h2>Alchemist's Cauldron</h2>
-      <div class="cauldron-counter">Ingredients: 0 / ${MAX_INGREDIENTS}</div>
-      <div class="cauldron-list">
-        <p class="empty-text">Drop ingredients here...</p>
+    <div class="cauldron-container ${animationClass}" id="cauldron-drop-zone">
+      <div class="cauldron-body">
+        <div class="cauldron-header">
+          <h3>Cauldron</h3>
+          <span class="cauldron-counter">${cauldronIngredients.length} / ${maxCauldron}</span>
+        </div>
+        <div class="cauldron-slots">
+          ${slotsHtml}
+        </div>
+        <div class="cauldron-actions" style="margin-top: 10px; text-align: center;">
+          <button class="pour-out-btn" id="pour-out-btn" ${isEmpty ? 'disabled' : ''}>
+            Pour Out (-10s)
+          </button>
+        </div>
       </div>
     </div>
   `;
-}
 
-export function renderCauldron(container: HTMLElement): void {
-  if (!container.querySelector('.cauldron-panel')) {
-    buildCauldron(container);
+  const cauldronContainer = container.querySelector('#cauldron-drop-zone');
+  if (cauldronContainer && brewResult) {
+    cauldronContainer.addEventListener(
+      'animationend',
+      () => {
+        delete state.lastBrewResult;
+      },
+      { once: true }
+    );
   }
 
-  const state = gameStore.getState();
-  const currentCount = state.cauldronIngredients.length;
-
-  const counter = container.querySelector('.cauldron-counter');
-  const countText = `Ingredients: ${currentCount} / ${MAX_INGREDIENTS}`;
-  if (counter && counter.textContent !== countText) {
-    counter.textContent = countText;
+  const pourOutBtn = container.querySelector('#pour-out-btn');
+  if (pourOutBtn) {
+    pourOutBtn.addEventListener('click', () => {
+      gameStore.pourOut();
+    });
   }
 
-  const list = container.querySelector('.cauldron-list');
-  if (list) {
-    let itemsHtml = '';
-    if (currentCount === 0) {
-      itemsHtml = '<p class="empty-text">Drop ingredients here...</p>';
-    } else {
-      state.cauldronIngredients.forEach((ing, index) => {
-        const imgUrl = INGREDIENT_IMAGES[ing.id] || '';
-        itemsHtml += `
-          <div class="cauldron-item" data-index="${index}">
-            <span class="icon">
-              <img src="${imgUrl}" alt="${ing.name}" width="32" height="32" />
-            </span>
-            <span class="name">${ing.name}</span>
-          </div>
-        `;
-      });
-    }
+  const dropZone = container.querySelector('#cauldron-drop-zone');
+  if (dropZone) {
+    dropZone.addEventListener('dragover', (e: Event) => {
+      const dragEvent = e as DragEvent;
+      dragEvent.preventDefault();
+      const currentState = gameStore.getState() as any;
+      const diff = (currentState.difficulty as Difficulty) || 'medium';
+      const currentSettings = DIFFICULTY_SETTINGS[diff];
 
-    if (list.innerHTML !== itemsHtml) {
-      list.innerHTML = itemsHtml;
-    }
+      if (
+        currentState.status !== 'playing' ||
+        currentState.cauldronIngredients.length >= currentSettings.maxCauldronIngredients
+      ) {
+        if (dragEvent.dataTransfer) dragEvent.dataTransfer.dropEffect = 'none';
+        return;
+      }
+
+      if (dragEvent.dataTransfer) dragEvent.dataTransfer.dropEffect = 'copy';
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e: Event) => {
+      const dragEvent = e as DragEvent;
+      dragEvent.preventDefault();
+      dropZone.classList.remove('drag-over');
+
+      const currentState = gameStore.getState();
+      if (currentState.status !== 'playing') return;
+
+      const ingredientId = dragEvent.dataTransfer?.getData('text/plain');
+      if (ingredientId) {
+        gameStore.addIngredientToCauldron(ingredientId);
+      }
+    });
   }
 }

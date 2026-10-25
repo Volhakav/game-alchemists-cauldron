@@ -35,7 +35,7 @@ export function loadGame(): IGameState | null {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    
+
     if (isValidSave(parsed)) {
       return parsed;
     } else {

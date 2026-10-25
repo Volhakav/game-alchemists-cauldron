@@ -4,6 +4,7 @@ import { getRecipesByDifficulty } from '../data/recipes';
 import { generateInitialStock } from '../logic/stock';
 import { calculateCauldron } from '../logic/calculate-cauldron';
 import { DIFFICULTY_SETTINGS } from '../data/difficulty';
+import { REACTIONS } from '../data/reactions';
 import { saveGame, loadGame, clearSave } from '../storage/save';
 
 function pickRandomRecipe(difficulty: Difficulty): IRecipe {
@@ -119,7 +120,7 @@ class GameStore {
     this.scoreSubmitted = false;
     this.state = {
       ...savedState,
-      status: 'paused', // Zgodnie z wymaganiem wznawia w stanie pauzy
+      status: 'paused',
     };
 
     this.notify();
@@ -184,7 +185,8 @@ class GameStore {
 
   public addIngredientToCauldron(ingredientId: string): boolean {
     if (this.state.status !== 'playing') return false;
-    const settings = DIFFICULTY_SETTINGS[this.state.difficulty || 'medium'];
+    const currentDifficulty = this.state.difficulty || 'medium';
+    const settings = DIFFICULTY_SETTINGS[currentDifficulty];
     if (this.state.cauldronIngredients.length >= settings.maxCauldronIngredients) return false;
 
     const currentStock = this.state.shelfStock[ingredientId] ?? 0;
@@ -194,8 +196,43 @@ class GameStore {
     const ingredient = activeIngredients.find((i) => i.id === ingredientId);
     if (!ingredient) return false;
 
+    const before = [...this.state.cauldronIngredients];
+    const beforeStats = calculateCauldron(before, currentDifficulty);
+
+    const after = [...before, ingredient];
+    const afterStats = calculateCauldron(after, currentDifficulty);
+
+    const enabledReactions = REACTIONS.slice(0, settings.reactionsCount);
+
+    const firedNow = enabledReactions.filter((reaction) => {
+      const wasActive = reaction.isActive(before, beforeStats);
+      const isActiveNow = reaction.isActive(after, afterStats);
+      return !wasActive && isActiveNow;
+    });
+
     this.state.shelfStock[ingredientId] = currentStock - 1;
-    this.state.cauldronIngredients.push(ingredient);
+    this.state.cauldronIngredients = after;
+
+    for (const reaction of firedNow) {
+      reaction.apply(afterStats, this.state);
+    }
+
+    if (this.state.lives <= 0) {
+      this.endGame('Out of lives!');
+      return true;
+    }
+
+    this.notify();
+    return true;
+  }
+
+  public pourOut(): boolean {
+    if (this.state.status !== 'playing') return false;
+    if (this.state.cauldronIngredients.length === 0) return false;
+
+    this.state.cauldronIngredients = [];
+    this.state.timeLeft = Math.max(0, this.state.timeLeft - 10);
+    this.endTime = Date.now() + this.state.timeLeft * 1000;
 
     this.notify();
     return true;
@@ -208,7 +245,7 @@ class GameStore {
     const diff = this.state.difficulty || 'medium';
     const settings = DIFFICULTY_SETTINGS[diff];
 
-    const totals = calculateCauldron(this.state.cauldronIngredients);
+    const totals = calculateCauldron(this.state.cauldronIngredients, diff);
     const recipe = this.state.activeRecipe;
     const tolerance = settings.tolerance;
 
@@ -226,11 +263,15 @@ class GameStore {
 
     const isSuccess = isTempValid && isDensityValid && isMagicValid;
 
+    (this.state as any).lastBrewResult = isSuccess ? 'success' : 'failure';
+
     if (isSuccess) {
       this.state.score += settings.scorePerBrew;
-      this.state.timeLeft = Math.min(settings.startTime, this.state.timeLeft + settings.timeBonusPerBrew);
+      this.state.timeLeft = Math.min(
+        settings.startTime,
+        this.state.timeLeft + settings.timeBonusPerBrew
+      );
       this.endTime = Date.now() + this.state.timeLeft * 1000;
-
       this.state.activeRecipe = pickRandomRecipe(diff);
     } else {
       this.state.lives -= 1;
