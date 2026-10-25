@@ -14,7 +14,7 @@ function pickRandomRecipe(difficulty: Difficulty): IRecipe {
 }
 
 class GameStore {
-  private state: IGameState & { gameOverReason?: string; lastFiredReactionNames?: string[] } = {
+  private state: IGameState & { gameOverReason?: string } = {
     status: 'menu',
     score: 0,
     timeLeft: 150,
@@ -24,7 +24,6 @@ class GameStore {
     cauldronIngredients: [],
     shelfStock: generateInitialStock(6),
     gameOverReason: undefined,
-    lastFiredReactionNames: [],
   };
 
   private listeners: Array<(state: IGameState) => void> = [];
@@ -109,7 +108,6 @@ class GameStore {
       cauldronIngredients: [],
       shelfStock: generateInitialStock(activeIngredients.length),
       gameOverReason: undefined,
-      lastFiredReactionNames: [],
     };
     this.startTimer();
     this.notify();
@@ -123,7 +121,6 @@ class GameStore {
     this.state = {
       ...savedState,
       status: 'paused',
-      lastFiredReactionNames: [],
     };
 
     this.notify();
@@ -229,15 +226,25 @@ class GameStore {
     return true;
   }
 
+  // US 3.4: Pour Out implementation
+  public pourOut(): boolean {
+    if (this.state.status !== 'playing') return false;
+    if (this.state.cauldronIngredients.length === 0) return false;
+
+    this.state.cauldronIngredients = [];
+    this.state.timeLeft = Math.max(0, this.state.timeLeft - 10);
+    this.endTime = Date.now() + this.state.timeLeft * 1000;
+
+    this.notify();
+    return true;
+  }
+
   public brew(): boolean {
     if (this.state.status !== 'playing') return false;
     if (this.state.cauldronIngredients.length === 0) return false;
 
     const diff = this.state.difficulty || 'medium';
     const settings = DIFFICULTY_SETTINGS[diff];
-
-    // Po warzeniu czyszczymy powiadomienia o reakcjach
-    this.state.lastFiredReactionNames = [];
 
     const totals = calculateCauldron(this.state.cauldronIngredients, diff);
     const recipe = this.state.activeRecipe;

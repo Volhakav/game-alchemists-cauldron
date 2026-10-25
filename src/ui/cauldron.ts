@@ -9,6 +9,7 @@ export function renderCauldron(container: HTMLElement): void {
   const settings = DIFFICULTY_SETTINGS[currentDifficulty];
   const maxCauldron = settings.maxCauldronIngredients;
   const cauldronIngredients = state.cauldronIngredients;
+  const isEmpty = cauldronIngredients.length === 0;
 
   const slotsHtml = Array.from({ length: maxCauldron })
     .map((_, index) => {
@@ -35,10 +36,24 @@ export function renderCauldron(container: HTMLElement): void {
         <div class="cauldron-slots">
           ${slotsHtml}
         </div>
+        <div class="cauldron-actions" style="margin-top: 10px; text-align: center;">
+          <button class="pour-out-btn" id="pour-out-btn" ${isEmpty ? 'disabled' : ''}>
+            Pour Out (-10s)
+          </button>
+        </div>
       </div>
     </div>
   `;
 
+  // Obsługa przycisku Pour Out
+  const pourOutBtn = container.querySelector('#pour-out-btn');
+  if (pourOutBtn) {
+    pourOutBtn.addEventListener('click', () => {
+      gameStore.pourOut();
+    });
+  }
+
+  // Obsługa strefy upuszczania (Drag & Drop)
   const dropZone = container.querySelector('#cauldron-drop-zone');
   if (dropZone) {
     dropZone.addEventListener('dragover', (e: Event) => {
