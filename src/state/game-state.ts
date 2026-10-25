@@ -267,7 +267,10 @@ class GameStore {
 
     if (isSuccess) {
       this.state.score += settings.scorePerBrew;
-      this.state.timeLeft = Math.min(settings.startTime, this.state.timeLeft + settings.timeBonusPerBrew);
+      this.state.timeLeft = Math.min(
+        settings.startTime,
+        this.state.timeLeft + settings.timeBonusPerBrew
+      );
       this.endTime = Date.now() + this.state.timeLeft * 1000;
       this.state.activeRecipe = pickRandomRecipe(diff);
     } else {

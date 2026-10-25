@@ -10,7 +10,7 @@ export function renderCauldron(container: HTMLElement): void {
   const maxCauldron = settings.maxCauldronIngredients;
   const cauldronIngredients = state.cauldronIngredients;
   const isEmpty = cauldronIngredients.length === 0;
-  const brewResult = state.lastBrewResult; 
+  const brewResult = state.lastBrewResult;
   const slotsHtml = Array.from({ length: maxCauldron })
     .map((_, index) => {
       const ingredient = cauldronIngredients[index];
@@ -51,9 +51,13 @@ export function renderCauldron(container: HTMLElement): void {
 
   const cauldronContainer = container.querySelector('#cauldron-drop-zone');
   if (cauldronContainer && brewResult) {
-    cauldronContainer.addEventListener('animationend', () => {
-      delete state.lastBrewResult;
-    }, { once: true });
+    cauldronContainer.addEventListener(
+      'animationend',
+      () => {
+        delete state.lastBrewResult;
+      },
+      { once: true }
+    );
   }
 
   const pourOutBtn = container.querySelector('#pour-out-btn');
@@ -71,8 +75,11 @@ export function renderCauldron(container: HTMLElement): void {
       const currentState = gameStore.getState() as any;
       const diff = (currentState.difficulty as Difficulty) || 'medium';
       const currentSettings = DIFFICULTY_SETTINGS[diff];
-      
-      if (currentState.status !== 'playing' || currentState.cauldronIngredients.length >= currentSettings.maxCauldronIngredients) {
+
+      if (
+        currentState.status !== 'playing' ||
+        currentState.cauldronIngredients.length >= currentSettings.maxCauldronIngredients
+      ) {
         if (dragEvent.dataTransfer) dragEvent.dataTransfer.dropEffect = 'none';
         return;
       }

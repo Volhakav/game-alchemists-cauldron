@@ -24,8 +24,7 @@ export function initKeyboardHandler(): void {
         gameStore.pourOut();
         return;
       }
-    } 
-    else if (state.status === 'paused') {
+    } else if (state.status === 'paused') {
       if (e.code === 'KeyP' || e.code === 'Escape') {
         e.preventDefault();
         gameStore.resumeGame();

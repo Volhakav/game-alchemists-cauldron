@@ -96,7 +96,11 @@ export function validatePlayerName(name: string): { isValid: boolean; error?: st
   return { isValid: true };
 }
 
-export function addLeaderboardEntry(difficulty: Difficulty, name: string, score: number): ILeaderboardEntry[] {
+export function addLeaderboardEntry(
+  difficulty: Difficulty,
+  name: string,
+  score: number
+): ILeaderboardEntry[] {
   const entries = getLeaderboard(difficulty);
   const newEntry: ILeaderboardEntry = {
     id: `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,

@@ -133,7 +133,8 @@ export const REACTIONS: IReaction[] = [
     id: 'steam-burst',
     name: 'Steam Burst',
     type: 'mix',
-    isActive: (ing, stats) => hasIng(ing, 'dragon-tears') && hasIng(ing, 'caustic-acid') && stats.temperature >= 35,
+    isActive: (ing, stats) =>
+      hasIng(ing, 'dragon-tears') && hasIng(ing, 'caustic-acid') && stats.temperature >= 35,
     apply: (stats, gameState) => {
       stats.temperature += 10;
       if (gameState) gameState.timeLeft = Math.max(0, gameState.timeLeft - 5);
@@ -144,7 +145,8 @@ export const REACTIONS: IReaction[] = [
     id: 'black-ice',
     name: 'Black Ice',
     type: 'mix',
-    isActive: (ing, stats) => hasIng(ing, 'frost-lotus') && hasIng(ing, 'essence-of-the-void') && stats.density <= 0,
+    isActive: (ing, stats) =>
+      hasIng(ing, 'frost-lotus') && hasIng(ing, 'essence-of-the-void') && stats.density <= 0,
     apply: (stats) => {
       stats.temperature -= 10;
       stats.magicPower += Math.round(stats.magicPower * 0.2);
@@ -155,7 +157,8 @@ export const REACTIONS: IReaction[] = [
     id: 'heavy-spark',
     name: 'Heavy Spark',
     type: 'mix',
-    isActive: (ing, stats) => hasIng(ing, 'fairy-dust') && hasIng(ing, 'toad-slime') && stats.density >= 40,
+    isActive: (ing, stats) =>
+      hasIng(ing, 'fairy-dust') && hasIng(ing, 'toad-slime') && stats.density >= 40,
     apply: (stats) => {
       stats.density += Math.round(stats.density * 0.2);
       stats.magicPower += Math.round(stats.magicPower * 0.1);
@@ -166,7 +169,8 @@ export const REACTIONS: IReaction[] = [
     id: 'burning-root',
     name: 'Burning Root',
     type: 'mix',
-    isActive: (ing, stats) => hasIng(ing, 'mandrake-root') && hasIng(ing, 'phoenix-feather') && stats.temperature >= 40,
+    isActive: (ing, stats) =>
+      hasIng(ing, 'mandrake-root') && hasIng(ing, 'phoenix-feather') && stats.temperature >= 40,
     apply: (stats) => {
       stats.temperature += 15;
       stats.density -= Math.round(stats.density * 0.1);
@@ -177,7 +181,8 @@ export const REACTIONS: IReaction[] = [
     id: 'void-resonance',
     name: 'Void Resonance',
     type: 'mix',
-    isActive: (ing, stats) => hasIng(ing, 'essence-of-the-void') && hasIng(ing, 'dragon-tears') && stats.magicPower >= 50,
+    isActive: (ing, stats) =>
+      hasIng(ing, 'essence-of-the-void') && hasIng(ing, 'dragon-tears') && stats.magicPower >= 50,
     apply: (stats) => {
       stats.magicPower += Math.round(stats.magicPower * 0.3);
       stats.temperature -= 5;

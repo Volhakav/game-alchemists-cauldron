@@ -11,7 +11,7 @@ function buildShelf(container: HTMLElement): void {
   const cardsHtml = activeIngredients
     .map((ing) => {
       const imgUrl = INGREDIENT_IMAGES[ing.id] || '';
-      
+
       const t = ing.temperature >= 0 ? `+${ing.temperature}` : `−${Math.abs(ing.temperature)}`;
       const d = ing.density >= 0 ? `+${ing.density}` : `−${Math.abs(ing.density)}`;
       const m = ing.magicPower >= 0 ? `+${ing.magicPower}` : `−${Math.abs(ing.magicPower)}`;
@@ -77,36 +77,43 @@ function buildShelf(container: HTMLElement): void {
       }
     });
 
-    shelfCardsContainer.addEventListener('mouseenter', (e) => {
-      const target = e.target as HTMLElement;
-      const btn = target.closest<HTMLButtonElement>('.ingredient-card');
-      if (!btn) return;
+    shelfCardsContainer.addEventListener(
+      'mouseenter',
+      (e) => {
+        const target = e.target as HTMLElement;
+        const btn = target.closest<HTMLButtonElement>('.ingredient-card');
+        if (!btn) return;
 
-      const tooltip = btn.querySelector('.ingredient-tooltip') as HTMLElement;
-      if (!tooltip) return;
+        const tooltip = btn.querySelector('.ingredient-tooltip') as HTMLElement;
+        if (!tooltip) return;
 
-      tooltip.classList.remove('tooltip--left', 'tooltip--up');
+        tooltip.classList.remove('tooltip--left', 'tooltip--up');
 
-      const rect = btn.getBoundingClientRect();
-      const tooltipWidth = 150;
-      const tooltipHeight = 90;
+        const rect = btn.getBoundingClientRect();
+        const tooltipWidth = 150;
+        const tooltipHeight = 90;
 
-      if (rect.right + tooltipWidth > window.innerWidth) {
-        tooltip.classList.add('tooltip--left');
-      }
-      if (rect.bottom + tooltipHeight > window.innerHeight) {
-        tooltip.classList.add('tooltip--up');
-      }
-    }, true);
+        if (rect.right + tooltipWidth > window.innerWidth) {
+          tooltip.classList.add('tooltip--left');
+        }
+        if (rect.bottom + tooltipHeight > window.innerHeight) {
+          tooltip.classList.add('tooltip--up');
+        }
+      },
+      true
+    );
   }
 }
 
 export function renderShelf(container: HTMLElement): void {
   const state = gameStore.getState();
   const settings = DIFFICULTY_SETTINGS[state.difficulty || 'medium'];
-  
+
   const existingCards = container.querySelectorAll<HTMLButtonElement>('.ingredient-card');
-  if (!container.querySelector('.shelf-panel') || existingCards.length !== settings.shelfIngredientsCount) {
+  if (
+    !container.querySelector('.shelf-panel') ||
+    existingCards.length !== settings.shelfIngredientsCount
+  ) {
     buildShelf(container);
   }
 
