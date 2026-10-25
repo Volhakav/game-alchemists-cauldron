@@ -226,7 +226,6 @@ class GameStore {
     return true;
   }
 
-  // US 3.4: Pour Out implementation
   public pourOut(): boolean {
     if (this.state.status !== 'playing') return false;
     if (this.state.cauldronIngredients.length === 0) return false;
@@ -264,11 +263,12 @@ class GameStore {
 
     const isSuccess = isTempValid && isDensityValid && isMagicValid;
 
+    (this.state as any).lastBrewResult = isSuccess ? 'success' : 'failure';
+
     if (isSuccess) {
       this.state.score += settings.scorePerBrew;
       this.state.timeLeft = Math.min(settings.startTime, this.state.timeLeft + settings.timeBonusPerBrew);
       this.endTime = Date.now() + this.state.timeLeft * 1000;
-
       this.state.activeRecipe = pickRandomRecipe(diff);
     } else {
       this.state.lives -= 1;
