@@ -6,7 +6,8 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "bundler",
     
-    "types": ["vite/client"],
+    "types": ["vite/client", "react", "react-dom"],
+    "jsx": "react-jsx",
     "noEmit": true,
 
     "strict": true,
