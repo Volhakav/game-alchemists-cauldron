@@ -1,7 +1,13 @@
 import { gameStore } from '../state/game-state';
 
-export function initKeyboardHandler(): void {
-  window.addEventListener('keydown', (e: KeyboardEvent) => {
+let activeHandler: ((e: KeyboardEvent) => void) | null = null;
+
+export function initKeyboardHandler(): () => void {
+  if (activeHandler) {
+    window.removeEventListener('keydown', activeHandler);
+  }
+
+  const handler = (e: KeyboardEvent) => {
     const target = e.target as HTMLElement;
     if (
       target &&
@@ -31,5 +37,15 @@ export function initKeyboardHandler(): void {
         return;
       }
     }
-  });
+  };
+
+  activeHandler = handler;
+  window.addEventListener('keydown', handler);
+
+  return () => {
+    if (activeHandler === handler) {
+      window.removeEventListener('keydown', handler);
+      activeHandler = null;
+    }
+  };
 }
