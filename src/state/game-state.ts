@@ -44,8 +44,11 @@ class GameStore {
     return this.state;
   }
 
-  public subscribe(listener: (state: IGameState) => void): void {
+  public subscribe(listener: (state: IGameState) => void): () => void {
     this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter((l) => l !== listener);
+    };
   }
 
   private notify(): void {
@@ -263,7 +266,9 @@ class GameStore {
 
     const isSuccess = isTempValid && isDensityValid && isMagicValid;
 
-    (this.state as any).lastBrewResult = isSuccess ? 'success' : 'failure';
+    (this.state as IGameState & { lastBrewResult?: string }).lastBrewResult = isSuccess
+      ? 'success'
+      : 'failure';
 
     if (isSuccess) {
       this.state.score += settings.scorePerBrew;
